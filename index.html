@@ -2447,6 +2447,18 @@ window.savePatient=function(id){
   } else {
     const newId2='P'+String(DB.patients.length+1).padStart(3,'0');
     DB.patients.push({id:newId2,name,phone,dob:document.getElementById('m-pdob').value,gender:document.getElementById('m-pgender').value,address:document.getElementById('m-paddress').value,history:document.getElementById('m-phistory').value,emergency:document.getElementById('m-pemergency').value,balance:0,createdAt:new Date().toISOString().split('T')[0]});
+
+if(window.savePatientToSupabase){
+  savePatientToSupabase({
+    id:newId2,
+    name:name,
+    phone:phone,
+    gender:document.getElementById('m-pgender').value,
+    dob:document.getElementById('m-pdob').value,
+    history:document.getElementById('m-phistory').value
+  });
+}
+
   }
   saveDB();closeModals();refreshPage('patients');refreshPage('dashboard');
   toast('ok',(id?'تم تعديل':'تم تسجيل')+' المريض ✓');updateBadges();

@@ -45,3 +45,27 @@ console.log('ERROR:', error);
 }
 
 
+
+window.savePatientToSupabase = async function(patient){
+
+  const { data, error } = await supabaseClient
+    .from('patients')
+    .insert([{
+      patient_code: patient.id,
+      full_name: patient.name,
+      phone: patient.phone,
+      gender: patient.gender,
+      birth_date: patient.dob || null,
+      notes: patient.history || ''
+    }])
+    .select();
+
+  console.log('SUPABASE PATIENT:', data);
+
+  if(error){
+    console.error('SUPABASE ERROR:', error);
+  }
+
+  return {data,error};
+};
+
