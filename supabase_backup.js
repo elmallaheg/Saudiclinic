@@ -44,4 +44,4 @@ console.log('DATA:', data);
 console.log('ERROR:', error);
 }
 
-
+testInsert();
