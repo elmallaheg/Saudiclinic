@@ -11,6 +11,15 @@ const supabaseClient = supabase.createClient(
 console.log("✅ Supabase Connected");
 
 /* =========================
+   HELPERS
+========================= */
+// مطابقة السجل: لو المعرّف يشبه UUID نطابق على عمود id، وإلا على عمود الكود النصي (D.. / PT..)
+function _matchByKey(query, codeColumn, id){
+  const isUuid = typeof id === 'string' && id.indexOf('-') > -1 && id.length >= 32;
+  return isUuid ? query.eq('id', id) : query.eq(codeColumn, id);
+}
+
+/* =========================
    PATIENTS
 ========================= */
 
@@ -47,6 +56,9 @@ window.loadPatientsFromSupabase = async function(){
     return;
   }
 
+  // fallback: لو Supabase رجعت فارغة نُبقي بيانات localStorage الحالية
+  if(!data || !data.length){ console.warn('patients: no rows from Supabase, keeping local data'); return; }
+
   DB.patients = (data || []).map(p => ({
     id: p.patient_code || p.id,
     name: p.full_name || '',
@@ -65,6 +77,9 @@ window.loadPatientsFromSupabase = async function(){
 
 /* =========================
    DOCTORS
+   ملاحظة: التطبيق يستخدم الحقل (spec) للتخصص، و(ratio) للنسبة،
+   و(salary) للراتب الثابت، و(active) للحالة، و(paid) للمدفوع.
+   عمود قاعدة البيانات للتخصص اسمه (specialty) — تم تصحيح الربط هنا.
 ========================= */
 
 window.saveDoctorToSupabase = async function(doc){
@@ -75,13 +90,68 @@ window.saveDoctorToSupabase = async function(doc){
       doctor_code: doc.id,
       full_name: doc.name,
       phone: doc.phone || '',
-      specialty: doc.specialty || '',
-      commission: doc.ratio || 0
+      specialty: doc.spec || '',          // FIX: كان doc.specialty (غير موجود)
+      commission: doc.ratio || 0,
+      fixed_salary: doc.salary || 0,
+      notes: doc.notes || '',
+      is_active: doc.active !== false,
+      paid: doc.paid || 0
     }])
     .select();
 
   if(error){
     console.error('DOCTOR ERROR:', error);
+  }
+
+  return {data,error};
+};
+
+window.updateDoctorInSupabase = async function(doc){
+
+  const { data,error } = await _matchByKey(
+    supabaseClient.from('doctors').update({
+      full_name: doc.name,
+      phone: doc.phone || '',
+      specialty: doc.spec || '',
+      commission: doc.ratio || 0,
+      fixed_salary: doc.salary || 0,
+      notes: doc.notes || '',
+      is_active: doc.active !== false,
+      paid: doc.paid || 0
+    }),
+    'doctor_code', doc.id
+  ).select();
+
+  if(error){
+    console.error('UPDATE DOCTOR ERROR:', error);
+  }
+
+  return {data,error};
+};
+
+window.deleteDoctorFromSupabase = async function(id){
+
+  const { data,error } = await _matchByKey(
+    supabaseClient.from('doctors').delete(),
+    'doctor_code', id
+  ).select();
+
+  if(error){
+    console.error('DELETE DOCTOR ERROR:', error);
+  }
+
+  return {data,error};
+};
+
+window.setDoctorActiveInSupabase = async function(id, isActive){
+
+  const { data,error } = await _matchByKey(
+    supabaseClient.from('doctors').update({ is_active: !!isActive }),
+    'doctor_code', id
+  ).select();
+
+  if(error){
+    console.error('TOGGLE DOCTOR ERROR:', error);
   }
 
   return {data,error};
@@ -98,12 +168,19 @@ window.loadDoctorsFromSupabase = async function(){
     return;
   }
 
+  // fallback: لو Supabase رجعت فارغة نُبقي بيانات localStorage الحالية
+  if(!data || !data.length){ console.warn('doctors: no rows from Supabase, keeping local data'); return; }
+
   DB.doctors = (data || []).map(d => ({
     id: d.doctor_code || d.id,
     name: d.full_name || '',
-    specialty: d.specialty || '',
+    spec: d.specialty || '',             // FIX: كان specialty (التطبيق يتوقع spec)
+    phone: d.phone || '',
     ratio: d.commission || 0,
-    paid: 0
+    salary: d.fixed_salary || 0,
+    notes: d.notes || '',
+    active: d.is_active !== false,
+    paid: d.paid || 0
   }));
 
   console.log('✅ Doctors Loaded:', DB.doctors.length);
@@ -146,6 +223,9 @@ window.loadAppointmentsFromSupabase = async function(){
     return;
   }
 
+  // fallback: لو Supabase رجعت فارغة نُبقي بيانات localStorage الحالية
+  if(!data || !data.length){ console.warn('appointments: no rows from Supabase, keeping local data'); return; }
+
   DB.appointments = (data || []).map(a => ({
     id: a.id,
     patientId: a.patient_id,
@@ -158,4 +238,132 @@ window.loadAppointmentsFromSupabase = async function(){
   }));
 
   console.log('✅ Appointments Loaded:', DB.appointments.length);
+};
+
+/* =========================
+   PARTNERS  (Phase 2 — جديد)
+   التطبيق: {id:'PT..', name, shares, withdrawn, phone, email, notes, active}
+   قاعدة البيانات: partner_code, full_name, share_percentage, withdrawn,
+                   phone, email, notes, is_active
+========================= */
+
+window.savePartnerToSupabase = async function(p){
+
+  const { data,error } = await supabaseClient
+    .from('partners')
+    .insert([{
+      partner_code: p.id,
+      full_name: p.name,
+      phone: p.phone || '',
+      email: p.email || '',
+      share_percentage: p.shares || 0,
+      withdrawn: p.withdrawn || 0,
+      notes: p.notes || '',
+      is_active: p.active !== false
+    }])
+    .select();
+
+  if(error){
+    console.error('PARTNER ERROR:', error);
+  }
+
+  return {data,error};
+};
+
+window.updatePartnerInSupabase = async function(p){
+
+  const { data,error } = await _matchByKey(
+    supabaseClient.from('partners').update({
+      full_name: p.name,
+      phone: p.phone || '',
+      email: p.email || '',
+      share_percentage: p.shares || 0,
+      withdrawn: p.withdrawn || 0,
+      notes: p.notes || '',
+      is_active: p.active !== false
+    }),
+    'partner_code', p.id
+  ).select();
+
+  if(error){
+    console.error('UPDATE PARTNER ERROR:', error);
+  }
+
+  return {data,error};
+};
+
+window.deletePartnerFromSupabase = async function(id){
+
+  const { data,error } = await _matchByKey(
+    supabaseClient.from('partners').delete(),
+    'partner_code', id
+  ).select();
+
+  if(error){
+    console.error('DELETE PARTNER ERROR:', error);
+  }
+
+  return {data,error};
+};
+
+window.setPartnerActiveInSupabase = async function(id, isActive){
+
+  const { data,error } = await _matchByKey(
+    supabaseClient.from('partners').update({ is_active: !!isActive }),
+    'partner_code', id
+  ).select();
+
+  if(error){
+    console.error('TOGGLE PARTNER ERROR:', error);
+  }
+
+  return {data,error};
+};
+
+window.loadPartnersFromSupabase = async function(){
+
+  const { data,error } = await supabaseClient
+    .from('partners')
+    .select('*')
+    .order('created_at',{ascending:true});
+
+  if(error){
+    console.error('LOAD PARTNERS ERROR:', error);
+    return;
+  }
+
+  // fallback: لو Supabase رجعت فارغة نُبقي بيانات localStorage الحالية
+  if(!data || !data.length){ console.warn('partners: no rows from Supabase, keeping local data'); return; }
+
+  DB.partners = (data || []).map(p => ({
+    id: p.partner_code || p.id,
+    name: p.full_name || '',
+    phone: p.phone || '',
+    email: p.email || '',
+    shares: p.share_percentage || 0,
+    withdrawn: p.withdrawn || 0,
+    notes: p.notes || '',
+    active: p.is_active !== false
+  }));
+
+  console.log('✅ Partners Loaded:', DB.partners.length);
+};
+
+/* =========================
+   BOOT LOADER (اختياري — Phase 4)
+   استدعِها بعد تسجيل الدخول لتحميل الكيانات الأساسية من Supabase.
+========================= */
+window.loadAllFromSupabase = async function(){
+  try{
+    await window.loadPatientsFromSupabase();
+    await window.loadDoctorsFromSupabase();
+    await window.loadAppointmentsFromSupabase();
+    await window.loadPartnersFromSupabase();
+    if(typeof saveDB === 'function') saveDB();       // تحديث نسخة localStorage الاحتياطية
+    if(typeof renderAllPages === 'function') renderAllPages();
+    if(typeof updateBadges === 'function') updateBadges();
+    console.log('✅ All core entities loaded from Supabase');
+  }catch(e){
+    console.error('LOAD ALL ERROR:', e);
+  }
 };
