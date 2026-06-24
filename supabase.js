@@ -69,3 +69,37 @@ window.savePatientToSupabase = async function(patient){
   return {data,error};
 };
 
+
+window.loadPatientsFromSupabase = async function(){
+
+  const { data, error } = await supabaseClient
+    .from('patients')
+    .select('*')
+    .order('created_at',{ascending:false});
+
+  if(error){
+    console.error('LOAD PATIENTS ERROR:', error);
+    return;
+  }
+
+  DB.patients = (data || []).map(p => ({
+    id: p.patient_code || p.id,
+    name: p.full_name || '',
+    phone: p.phone || '',
+    gender: p.gender || 'ذكر',
+    dob: p.birth_date || '',
+    history: p.notes || '',
+    address: '',
+    emergency: '',
+    balance: 0,
+    createdAt: p.created_at || ''
+  }));
+
+  console.log('✅ Patients Loaded:', DB.patients.length);
+
+  if(typeof refreshPage === 'function'){
+    refreshPage('patients');
+    refreshPage('dashboard');
+  }
+};
+
