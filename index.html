@@ -568,6 +568,28 @@ loadDB();
 // ═══════════════════════════════════════
 let currentUser = null;
 
+// ===== SESSION PERSISTENCE (Phase 3) =====
+const SESSION_KEY = 'dcms_session';
+function saveSession(user){
+  try{
+    localStorage.setItem(SESSION_KEY, JSON.stringify({
+      username: user.username || '',
+      name: user.name || '',
+      role: user.role || ''
+    })); // لا نخزّن كلمة المرور
+  }catch(e){}
+}
+function clearSession(){ try{ localStorage.removeItem(SESSION_KEY); }catch(e){} }
+function restoreSession(){
+  let s=null;
+  try{ s=JSON.parse(localStorage.getItem(SESSION_KEY)||'null'); }catch(e){}
+  if(!s || !s.username) return false;
+  const user = DB.users.find(x=>x.username===s.username && x.active) || s;
+  if(!user.name) return false;
+  loginUser(user);
+  return true;
+}
+
 function doLogin(){
   const u = document.getElementById('l-user').value.trim();
   const p = document.getElementById('l-pass').value.trim();
@@ -590,6 +612,7 @@ function quickLogin(username, roleName){
 
 function loginUser(user){
   currentUser = user;
+  saveSession(user);
   document.getElementById('login-screen').style.display='none';
   document.getElementById('app').classList.add('show');
   document.getElementById('top-av').textContent = user.name.substring(0,3);
@@ -598,15 +621,21 @@ function loginUser(user){
   renderAllPages();
   updateBadges();
   toast('ok','مرحباً '+user.name+' 👋');
+  // تحميل الكيانات الأساسية من Supabase (مع localStorage كنسخة احتياطية)
+  if(typeof loadAllFromSupabase==='function'){ loadAllFromSupabase(); }
   setTimeout(()=>toast('wrn','⚠️ تنبيه: زرعات دنتيوم 3.5mm وصلت للحد الأدنى'),1500);
 }
 
 function doLogout(){
+  clearSession();
   currentUser = null;
   document.getElementById('app').classList.remove('show');
   document.getElementById('login-screen').style.display='flex';
   document.getElementById('l-err').style.display='none';
 }
+
+// استعادة الجلسة تلقائياً بعد اكتمال تحميل الصفحة وكل الدوال
+window.addEventListener('DOMContentLoaded', ()=>{ try{ restoreSession(); }catch(e){ console.error(e); } });
 
 // ═══════════════════════════════════════
 // NAVIGATION
@@ -1210,10 +1239,10 @@ function buildDoctorsAcc(){
   const cards=DB.doctors.map(d=>{
     const earned=calcDoctorEarned(d.id);
     const remaining=earned-(d.paid||0);
-    return `<div class="card">
+    return `<div class="card" style="${d.active===false?'opacity:.62':''}">
       <div class="fc2 gap8 mb12">
         <div class="av" style="width:44px;height:44px;font-size:15px">${d.name.substring(0,2)}</div>
-        <div><div style="font-size:15px;font-weight:700">${d.name}</div><div style="font-size:12px;color:var(--teal)">${d.spec} • ${d.ratio}% نسبة</div></div>
+        <div style="flex:1"><div style="font-size:15px;font-weight:700">${d.name} ${d.active===false?'<span class="bx br" style="font-size:9px">موقوف</span>':''}</div><div style="font-size:12px;color:var(--teal)">${d.spec} • ${d.ratio}% نسبة</div></div>
       </div>
       <div class="g2 gap8 mb12">
         <div style="padding:9px;background:var(--bg3);border-radius:8px;text-align:center"><div class="txs tm">إجمالي المستحق</div><div class="tc3 fw8" style="font-size:18px">${fmt(earned)} ${curSym()}</div></div>
@@ -1232,6 +1261,8 @@ function buildDoctorsAcc(){
       <div class="fc2 gap8" style="margin-top:8px">
         <button class="btn bs f1 btn-xs" onclick="showDoctorStatement('${d.id}')">كشف حساب</button>
         <button class="btn bs btn-xs" onclick="openModal('m-doctor','edit','${d.id}')">✏️</button>
+        <button class="btn bs btn-xs" onclick="toggleDoctorActive('${d.id}')" title="${d.active===false?'تفعيل':'إيقاف'}">${d.active===false?'✅':'⛔'}</button>
+        <button class="btn bd btn-xs" onclick="deleteDoctor('${d.id}')">🗑️</button>
       </div>
     </div>`;}).join('');
   return `
@@ -1482,10 +1513,10 @@ function buildPartners(){
       ${DB.partners.map(p=>{
         const pShare=p.shares*shareVal;
         const rem=pShare-(p.withdrawn||0);
-        return `<div style="background:var(--bg3);border:1px solid var(--border);border-radius:9px;padding:12px;margin-bottom:9px;display:flex;align-items:center;gap:11px">
+        return `<div style="background:var(--bg3);border:1px solid var(--border);border-radius:9px;padding:12px;margin-bottom:9px;display:flex;align-items:center;gap:11px;flex-wrap:wrap;${p.active===false?'opacity:.62':''}">
           <div class="av" style="width:34px;height:34px;font-size:12px">${p.name.substring(0,2)}</div>
-          <div style="flex:1">
-            <div class="fw7" style="font-size:13px">${p.name}</div>
+          <div style="flex:1;min-width:120px">
+            <div class="fw7" style="font-size:13px">${p.name} ${p.active===false?'<span class="bx br" style="font-size:9px">موقوف</span>':''}</div>
             <div style="font-size:11px;color:var(--t3)">${p.shares} حصة (${p.shares}%)</div>
           </div>
           <div style="text-align:left">
@@ -1494,6 +1525,8 @@ function buildPartners(){
           </div>
           <button class="btn bp btn-xs" onclick="payPartner('${p.id}')" ${rem<=0?'disabled':''}>دفع</button>
           <button class="btn bs btn-xs" onclick="openModal('m-partner','edit','${p.id}')">✏️</button>
+          <button class="btn bs btn-xs" onclick="togglePartnerActive('${p.id}')" title="${p.active===false?'تفعيل':'إيقاف'}">${p.active===false?'✅':'⛔'}</button>
+          <button class="btn bd btn-xs" onclick="deletePartner('${p.id}')">🗑️</button>
         </div>`;}).join('')}
     </div>
     </div>
@@ -2447,18 +2480,6 @@ window.savePatient=function(id){
   } else {
     const newId2='P'+String(DB.patients.length+1).padStart(3,'0');
     DB.patients.push({id:newId2,name,phone,dob:document.getElementById('m-pdob').value,gender:document.getElementById('m-pgender').value,address:document.getElementById('m-paddress').value,history:document.getElementById('m-phistory').value,emergency:document.getElementById('m-pemergency').value,balance:0,createdAt:new Date().toISOString().split('T')[0]});
-
-if(window.savePatientToSupabase){
-  savePatientToSupabase({
-    id:newId2,
-    name:name,
-    phone:phone,
-    gender:document.getElementById('m-pgender').value,
-    dob:document.getElementById('m-pdob').value,
-    history:document.getElementById('m-phistory').value
-  });
-}
-
   }
   saveDB();closeModals();refreshPage('patients');refreshPage('dashboard');
   toast('ok',(id?'تم تعديل':'تم تسجيل')+' المريض ✓');updateBadges();
@@ -2514,19 +2535,6 @@ window.saveAppt=function(id){
     if(a){a.patientId=patientId;a.doctorId=doctorId;a.type=type;a.date=date;a.time=time;a.notes=document.getElementById('m-aptnotes').value;}
   } else {
     DB.appointments.push({id:'A'+Date.now(),patientId,doctorId,type,date,time,status:'قادم',notes:document.getElementById('m-aptnotes').value,createdAt:new Date().toISOString().split('T')[0]});
-
-if(window.saveAppointmentToSupabase){
-  saveAppointmentToSupabase({
-    patientId,
-    doctorId,
-    type,
-    date,
-    time,
-    status:'قادم',
-    notes:document.getElementById('m-aptnotes').value
-  });
-}
-
     const p=getPatient(patientId);
     sendWAMessage(patientId,'تم تأكيد حجزك يوم '+fmtDate(date)+' الساعة '+time+' 📅');
     addNotif('موعد','📅','var(--tg)','موعد جديد - '+p.name,type+' • '+fmtDate(date));
@@ -2687,6 +2695,7 @@ window.saveExpense=function(id){
 // DOCTOR MODAL
 function buildDoctorModal(isEdit,id){
   const d=isEdit?DB.doctors.find(x=>x.id===id):{};
+  const active=d.active!==false;
   return `
   <div class="mh"><div class="mht">👨‍⚕️ ${isEdit?'تعديل':'إضافة'} طبيب</div><button class="xb" onclick="closeModals()">✕</button></div>
   <div class="mb">
@@ -2698,29 +2707,55 @@ function buildDoctorModal(isEdit,id){
       <div class="fg"><label class="fl">رقم الهاتف</label><input type="tel" class="fc" id="m-dphone" value="${d.phone||''}"></div>
       <div class="fg"><label class="fl">نسبة الاستحقاق %</label><input type="number" class="fc" id="m-dratio" value="${d.ratio||40}" min="0" max="100"></div>
     </div>
+    <div class="fr2">
+      <div class="fg"><label class="fl">الراتب الثابت (اختياري)</label><input type="number" class="fc" id="m-dsalary" value="${d.salary||0}" min="0"></div>
+      <div class="fg"><label class="fl">الحالة</label>
+        <select class="fc" id="m-dactive">
+          <option value="true" ${active?'selected':''}>✅ نشط</option>
+          <option value="false" ${!active?'selected':''}>⛔ موقوف</option>
+        </select>
+      </div>
+    </div>
+    <div class="fg"><label class="fl">ملاحظات</label><textarea class="fc" id="m-dnotes" rows="2">${d.notes||''}</textarea></div>
   </div>
   <div class="mf"><button class="btn bs" onclick="closeModals()">إلغاء</button><button class="btn bp" onclick="saveDoctor(${isEdit?`'${id}'`:'null'})">💾 حفظ</button></div>`;
 }
 window.saveDoctor=function(id){
   const name=document.getElementById('m-dname').value.trim();
   if(!name){toast('err','يرجى إدخال اسم الطبيب');return;}
-  const data={name,spec:document.getElementById('m-dspec').value,phone:document.getElementById('m-dphone').value,ratio:parseFloat(document.getElementById('m-dratio').value)||40};
-  if(id){Object.assign(DB.doctors.find(x=>x.id===id),data);}
-  else{
-DB.doctors.push({id:'D'+Date.now(),...data,paid:0});
-
-if(window.saveDoctorToSupabase){
-  saveDoctorToSupabase({
-    id:'D'+Date.now(),
-    name:data.name,
-    phone:data.phone,
-    specialty:data.specialty,
-    ratio:data.ratio
-  });
-}
-}
+  const data={
+    name,
+    spec:document.getElementById('m-dspec').value,
+    phone:document.getElementById('m-dphone').value,
+    ratio:parseFloat(document.getElementById('m-dratio').value)||40,
+    salary:parseFloat(document.getElementById('m-dsalary').value)||0,
+    notes:document.getElementById('m-dnotes').value||'',
+    active:document.getElementById('m-dactive').value==='true'
+  };
+  let doc;
+  if(id){ doc=DB.doctors.find(x=>x.id===id); Object.assign(doc,data); }
+  else{ doc={id:'D'+Date.now(),...data,paid:0}; DB.doctors.push(doc); }
   saveDB();closeModals();refreshPage('doctors-acc');
+  // مزامنة Supabase (لا تعطّل الواجهة)
+  if(id && typeof updateDoctorInSupabase==='function'){ updateDoctorInSupabase(doc); }
+  else if(typeof saveDoctorToSupabase==='function'){ saveDoctorToSupabase(doc); }
   toast('ok','✅ تم '+(id?'تعديل':'إضافة')+' الطبيب');
+};
+window.toggleDoctorActive=function(id){
+  const d=DB.doctors.find(x=>x.id===id); if(!d)return;
+  d.active = d.active===false ? true : false;
+  saveDB(); refreshPage('doctors-acc');
+  if(typeof setDoctorActiveInSupabase==='function'){ setDoctorActiveInSupabase(id, d.active); }
+  toast('ok', d.active?'تم تفعيل الطبيب ✓':'تم إيقاف الطبيب');
+};
+window.deleteDoctor=function(id){
+  showConfirm('🗑️','حذف الطبيب؟','سيتم حذف الطبيب من القائمة ومن Supabase.',()=>{
+    const i=DB.doctors.findIndex(x=>x.id===id);
+    if(i>-1)DB.doctors.splice(i,1);
+    saveDB(); refreshPage('doctors-acc'); refreshPage('dashboard');
+    if(typeof deleteDoctorFromSupabase==='function'){ deleteDoctorFromSupabase(id); }
+    toast('ok','✅ تم حذف الطبيب');
+  });
 };
 
 // LAB MODAL
@@ -2813,11 +2848,25 @@ window.saveStaff=function(id){
 // PARTNER MODAL
 function buildPartnerModal(isEdit,id){
   const p=isEdit?DB.partners.find(x=>x.id===id):{};
+  const active=p.active!==false;
   return `
   <div class="mh"><div class="mht">🤝 ${isEdit?'تعديل':'إضافة'} شريك</div><button class="xb" onclick="closeModals()">✕</button></div>
   <div class="mb">
-    <div class="fg"><label class="fl">اسم الشريك</label><input type="text" class="fc" id="m-ptname" value="${p.name||''}"></div>
-    <div class="fg"><label class="fl">عدد الحصص (من 100)</label><input type="number" class="fc" id="m-ptshares" value="${p.shares||0}" min="0" max="100"></div>
+    <div class="fr2">
+      <div class="fg"><label class="fl">اسم الشريك</label><input type="text" class="fc" id="m-ptname" value="${p.name||''}"></div>
+      <div class="fg"><label class="fl">عدد الحصص (من 100)</label><input type="number" class="fc" id="m-ptshares" value="${p.shares||0}" min="0" max="100"></div>
+    </div>
+    <div class="fr2">
+      <div class="fg"><label class="fl">رقم الهاتف</label><input type="tel" class="fc" id="m-ptphone" value="${p.phone||''}"></div>
+      <div class="fg"><label class="fl">البريد الإلكتروني</label><input type="email" class="fc" id="m-ptemail" value="${p.email||''}"></div>
+    </div>
+    <div class="fg"><label class="fl">الحالة</label>
+      <select class="fc" id="m-ptactive">
+        <option value="true" ${active?'selected':''}>✅ نشط</option>
+        <option value="false" ${!active?'selected':''}>⛔ موقوف</option>
+      </select>
+    </div>
+    <div class="fg"><label class="fl">ملاحظات</label><textarea class="fc" id="m-ptnotes" rows="2">${p.notes||''}</textarea></div>
     <div style="padding:10px;background:var(--bg3);border-radius:8px;font-size:12px;color:var(--t2)">
       إجمالي الحصص الحالية: ${DB.partners.filter(x=>x.id!==id).reduce((s,p)=>s+p.shares,0)} من 100
     </div>
@@ -2828,10 +2877,35 @@ window.savePartner=function(id){
   const name=document.getElementById('m-ptname').value.trim();
   const shares=parseFloat(document.getElementById('m-ptshares').value)||0;
   if(!name){toast('err','يرجى إدخال الاسم');return;}
-  if(id){const p=DB.partners.find(x=>x.id===id);if(p){p.name=name;p.shares=shares;}}
-  else{DB.partners.push({id:'PT'+Date.now(),name,shares,withdrawn:0});}
+  const extra={
+    phone:document.getElementById('m-ptphone')?.value||'',
+    email:document.getElementById('m-ptemail')?.value||'',
+    notes:document.getElementById('m-ptnotes')?.value||'',
+    active:(document.getElementById('m-ptactive')?.value||'true')==='true'
+  };
+  let p;
+  if(id){ p=DB.partners.find(x=>x.id===id); if(p){ Object.assign(p,{name,shares},extra); } }
+  else{ p={id:'PT'+Date.now(),name,shares,withdrawn:0,...extra}; DB.partners.push(p); }
   saveDB();closeModals();refreshPage('partners');refreshPage('accounting');
+  if(id && typeof updatePartnerInSupabase==='function'){ updatePartnerInSupabase(p); }
+  else if(typeof savePartnerToSupabase==='function'){ savePartnerToSupabase(p); }
   toast('ok','✅ تم '+(id?'تعديل':'إضافة')+' الشريك');
+};
+window.togglePartnerActive=function(id){
+  const p=DB.partners.find(x=>x.id===id); if(!p)return;
+  p.active = p.active===false ? true : false;
+  saveDB(); refreshPage('partners');
+  if(typeof setPartnerActiveInSupabase==='function'){ setPartnerActiveInSupabase(id, p.active); }
+  toast('ok', p.active?'تم تفعيل الشريك ✓':'تم إيقاف الشريك');
+};
+window.deletePartner=function(id){
+  showConfirm('🗑️','حذف الشريك؟','سيتم حذف الشريك من القائمة ومن Supabase.',()=>{
+    const i=DB.partners.findIndex(x=>x.id===id);
+    if(i>-1)DB.partners.splice(i,1);
+    saveDB(); refreshPage('partners'); refreshPage('accounting');
+    if(typeof deletePartnerFromSupabase==='function'){ deletePartnerFromSupabase(id); }
+    toast('ok','✅ تم حذف الشريك');
+  });
 };
 
 // INVOICE MODAL
@@ -4090,21 +4164,5 @@ window.previewLatestInvoice=function(){
 </script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="supabase.js"></script>
-
-<script>
-window.addEventListener('load', async () => {
-  if(window.loadPatientsFromSupabase){
-    await loadPatientsFromSupabase();
-
-  if(window.loadDoctorsFromSupabase){
-    await loadDoctorsFromSupabase();
-  }
-
-  if(window.loadAppointmentsFromSupabase){
-    await loadAppointmentsFromSupabase();
-  }
-  }
-});
-</script>
 </body>
 </html>
