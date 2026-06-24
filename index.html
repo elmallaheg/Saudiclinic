@@ -2514,6 +2514,19 @@ window.saveAppt=function(id){
     if(a){a.patientId=patientId;a.doctorId=doctorId;a.type=type;a.date=date;a.time=time;a.notes=document.getElementById('m-aptnotes').value;}
   } else {
     DB.appointments.push({id:'A'+Date.now(),patientId,doctorId,type,date,time,status:'قادم',notes:document.getElementById('m-aptnotes').value,createdAt:new Date().toISOString().split('T')[0]});
+
+if(window.saveAppointmentToSupabase){
+  saveAppointmentToSupabase({
+    patientId,
+    doctorId,
+    type,
+    date,
+    time,
+    status:'قادم',
+    notes:document.getElementById('m-aptnotes').value
+  });
+}
+
     const p=getPatient(patientId);
     sendWAMessage(patientId,'تم تأكيد حجزك يوم '+fmtDate(date)+' الساعة '+time+' 📅');
     addNotif('موعد','📅','var(--tg)','موعد جديد - '+p.name,type+' • '+fmtDate(date));
@@ -2693,7 +2706,19 @@ window.saveDoctor=function(id){
   if(!name){toast('err','يرجى إدخال اسم الطبيب');return;}
   const data={name,spec:document.getElementById('m-dspec').value,phone:document.getElementById('m-dphone').value,ratio:parseFloat(document.getElementById('m-dratio').value)||40};
   if(id){Object.assign(DB.doctors.find(x=>x.id===id),data);}
-  else{DB.doctors.push({id:'D'+Date.now(),...data,paid:0});}
+  else{
+DB.doctors.push({id:'D'+Date.now(),...data,paid:0});
+
+if(window.saveDoctorToSupabase){
+  saveDoctorToSupabase({
+    id:'D'+Date.now(),
+    name:data.name,
+    phone:data.phone,
+    specialty:data.specialty,
+    ratio:data.ratio
+  });
+}
+}
   saveDB();closeModals();refreshPage('doctors-acc');
   toast('ok','✅ تم '+(id?'تعديل':'إضافة')+' الطبيب');
 };
@@ -4070,6 +4095,14 @@ window.previewLatestInvoice=function(){
 window.addEventListener('load', async () => {
   if(window.loadPatientsFromSupabase){
     await loadPatientsFromSupabase();
+
+  if(window.loadDoctorsFromSupabase){
+    await loadDoctorsFromSupabase();
+  }
+
+  if(window.loadAppointmentsFromSupabase){
+    await loadAppointmentsFromSupabase();
+  }
   }
 });
 </script>

@@ -103,3 +103,57 @@ window.loadPatientsFromSupabase = async function(){
   }
 };
 
+
+window.saveDoctorToSupabase = async function(doc){
+
+  const { error } = await supabaseClient
+    .from('doctors')
+    .insert([{
+      doctor_code: doc.id,
+      full_name: doc.name,
+      phone: doc.phone || '',
+      specialty: doc.specialty || '',
+      commission: doc.ratio || 0
+    }]);
+
+  if(error) console.error('DOCTOR ERROR:', error);
+};
+
+window.saveAppointmentToSupabase = async function(appt){
+
+  const { error } = await supabaseClient
+    .from('appointments')
+    .insert([{
+      patient_id: appt.patientId,
+      doctor_id: appt.doctorId,
+      appointment_date: appt.date,
+      appointment_time: appt.time,
+      treatment_type: appt.type,
+      notes: appt.notes || '',
+      status: appt.status || 'scheduled'
+    }]);
+
+  if(error) console.error('APPOINTMENT ERROR:', error);
+};
+
+window.loadDoctorsFromSupabase = async function(){
+
+  const { data,error } = await supabaseClient
+    .from('doctors')
+    .select('*');
+
+  if(error) return console.error(error);
+
+  DB.doctors = (  DB.doctors = (  DB.doct     DB.doctors = (  DB.doctors = (  DB.doct     DB.
+                                       : d.                         o: d.commission || 0,
+    paid: 0
+  })  })  })  })  })  })  }ntmentsFromSupabase = async function(){
+
+  const { data,error } = await   const { data,error } = await ntments')
+    .select('*');
+
+  if(error) return console.error(error  if(error) return console.error(error  if(error) retur: a  if(error) return console.error(err  doc  if(error) return consoda  if(error) rme  if(error) return console.error_time,
+    type: a.treatment_type,    type: a.treatment_type,    t a.status
+  }));
+};
+
