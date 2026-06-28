@@ -286,18 +286,10 @@ textarea.fc{resize:vertical}
     <div class="login-logo">🦷</div>
     <div class="login-title">عيادة البسمة</div>
     <div class="login-sub">نظام الإدارة المتكامل v2.0</div>
-    <input type="text" class="login-input" id="l-user" placeholder="اسم المستخدم" value="admin">
-    <input type="password" class="login-input" id="l-pass" placeholder="كلمة المرور" value="1234">
+    <input type="email" class="login-input" id="l-user" placeholder="البريد الإلكتروني" autocomplete="username">
+    <input type="password" class="login-input" id="l-pass" placeholder="كلمة المرور" autocomplete="current-password" onkeydown="if(event.key==='Enter')doLogin()">
     <button class="login-btn" onclick="doLogin()">🔐 تسجيل الدخول</button>
-    <div style="font-size:11px;color:var(--t3);margin-bottom:10px">دخول سريع بدور محدد:</div>
-    <div class="login-roles">
-      <div class="lr" onclick="quickLogin('admin','مدير عام')">👑 مدير عام</div>
-      <div class="lr" onclick="quickLogin('doctor','طبيب')">👨‍⚕️ طبيب</div>
-      <div class="lr" onclick="quickLogin('recep','سكرتيرة')">💁 سكرتيرة</div>
-      <div class="lr" onclick="quickLogin('account','محاسب')">📊 محاسب</div>
-      <div class="lr" onclick="quickLogin('partner','شريك')">🤝 شريك</div>
-    </div>
-    <div id="l-err" class="login-err">❌ خطأ في الاسم أو كلمة المرور</div>
+    <div id="l-err" class="login-err">❌ خطأ في البريد أو كلمة المرور</div>
   </div>
 </div>
 
@@ -540,6 +532,7 @@ function ensureDefaults(){
   if(DB.settings.email===undefined) DB.settings.email='';
   if(DB.settings.taxNo===undefined) DB.settings.taxNo='';
   if(DB.settings.invoiceLogo===undefined) DB.settings.invoiceLogo='';
+  if(DB.settings.logo===undefined) DB.settings.logo='';
   if(DB.settings.invoiceTemplate===undefined) DB.settings.invoiceTemplate='';
   if(DB.settings.invoiceNotes===undefined) DB.settings.invoiceNotes='شكراً لثقتكم بنا. يرجى الاحتفاظ بهذه الفاتورة.';
   if(!Array.isArray(DB.paymentMethods)||!DB.paymentMethods.length) DB.paymentMethods=[
@@ -559,6 +552,7 @@ function ensureDefaults(){
 }
 function saveDB(){
   localStorage.setItem('dcms_db', JSON.stringify(DB));
+  if(typeof cloudSaveState==='function'){ cloudSaveState(); }   // ☁️ مزامنة تلقائية شاملة
 }
 
 loadDB();
@@ -568,74 +562,100 @@ loadDB();
 // ═══════════════════════════════════════
 let currentUser = null;
 
-// ===== SESSION PERSISTENCE (Phase 3) =====
-const SESSION_KEY = 'dcms_session';
-function saveSession(user){
+// ═══════════════════════════════════════
+// 🔐 SUPABASE AUTH — تسجيل دخول حقيقي وآمن
+// (الباسوردات مُعمّاة عند Supabase ولا تُخزَّن في الكود/المتصفح)
+// ═══════════════════════════════════════
+function _supaAuth(){
+  return (typeof supabaseClient!=='undefined' && supabaseClient && supabaseClient.auth) ? supabaseClient.auth : null;
+}
+
+window.doLogin = async function(){
+  const email=(document.getElementById('l-user').value||'').trim();
+  const pass=(document.getElementById('l-pass').value||'').trim();
+  const errEl=document.getElementById('l-err');
+  if(errEl) errEl.style.display='none';
+  const auth=_supaAuth();
+  if(!auth){ if(errEl){ errEl.textContent='⚠️ تعذّر الاتصال بنظام الدخول، حدّث الصفحة'; errEl.style.display='block'; } return; }
+  if(!email || !pass){ if(errEl){ errEl.textContent='❌ أدخل البريد وكلمة المرور'; errEl.style.display='block'; } return; }
+  const btn=document.querySelector('.login-btn'); const oldTxt=btn?btn.textContent:'';
+  if(btn){ btn.disabled=true; btn.textContent='⏳ جاري الدخول...'; }
   try{
-    localStorage.setItem(SESSION_KEY, JSON.stringify({
-      username: user.username || '',
-      name: user.name || '',
-      role: user.role || ''
-    })); // لا نخزّن كلمة المرور
-  }catch(e){}
-}
-function clearSession(){ try{ localStorage.removeItem(SESSION_KEY); }catch(e){} }
-function restoreSession(){
-  let s=null;
-  try{ s=JSON.parse(localStorage.getItem(SESSION_KEY)||'null'); }catch(e){}
-  if(!s || !s.username) return false;
-  const user = DB.users.find(x=>x.username===s.username && x.active) || s;
-  if(!user.name) return false;
-  loginUser(user);
-  return true;
-}
-
-function doLogin(){
-  const u = document.getElementById('l-user').value.trim();
-  const p = document.getElementById('l-pass').value.trim();
-  const user = DB.users.find(x=>x.username===u && x.password===p && x.active);
-  if(!user){
-    document.getElementById('l-err').style.display='block';
-    return;
+    const { data, error } = await auth.signInWithPassword({ email, password: pass });
+    if(error){
+      const msg=/invalid|credentials/i.test(error.message||'') ? 'بيانات الدخول غير صحيحة' :
+                /confirm/i.test(error.message||'') ? 'الحساب غير مُفعّل بعد' : error.message;
+      if(errEl){ errEl.textContent='❌ '+msg; errEl.style.display='block'; }
+      return;
+    }
+    await afterAuthLogin(data.user);
+  }catch(e){
+    console.error('LOGIN ERROR:', e);
+    if(errEl){ errEl.textContent='❌ خطأ غير متوقع، حاول مرة أخرى'; errEl.style.display='block'; }
+  }finally{
+    if(btn){ btn.disabled=false; btn.textContent=oldTxt; }
   }
-  loginUser(user);
-}
+};
 
-function quickLogin(username, roleName){
-  const user = DB.users.find(x=>x.username===username);
-  if(user) loginUser(user);
-  else{
-    const fake = {name:roleName,role:roleName,username};
-    loginUser(fake);
-  }
+// بعد نجاح المصادقة: اجلب الاسم/الدور من جدول profiles
+async function afterAuthLogin(authUser){
+  if(!authUser) return;
+  let profile=null;
+  try{
+    const { data } = await supabaseClient.from('profiles').select('*').eq('id', authUser.id).maybeSingle();
+    profile=data;
+  }catch(e){ console.warn('profile fetch failed:', e); }
+  const user={
+    id: authUser.id,
+    email: authUser.email||'',
+    name: (profile && profile.full_name) || (authUser.email? authUser.email.split('@')[0] : 'مستخدم'),
+    role: (profile && profile.role) || 'مستخدم',
+    username: (profile && profile.username) || authUser.email || ''
+  };
+  loginUser(user);
 }
 
 function loginUser(user){
   currentUser = user;
-  saveSession(user);
+  const av=document.getElementById('top-av'), nm=document.getElementById('top-name'), rl=document.getElementById('top-role');
   document.getElementById('login-screen').style.display='none';
   document.getElementById('app').classList.add('show');
-  document.getElementById('top-av').textContent = user.name.substring(0,3);
-  document.getElementById('top-name').textContent = user.name;
-  document.getElementById('top-role').textContent = user.role;
+  if(av) av.textContent=(user.name||'؟').substring(0,3);
+  if(nm) nm.textContent=user.name||'';
+  if(rl) rl.textContent=user.role||'';
   renderAllPages();
   updateBadges();
-  toast('ok','مرحباً '+user.name+' 👋');
-  // تحميل الكيانات الأساسية من Supabase (مع localStorage كنسخة احتياطية)
+  toast('ok','مرحباً '+(user.name||'')+' 👋');
+  // تحميل كل البيانات من السحابة
   if(typeof loadAllFromSupabase==='function'){ loadAllFromSupabase(); }
-  setTimeout(()=>toast('wrn','⚠️ تنبيه: زرعات دنتيوم 3.5mm وصلت للحد الأدنى'),1500);
 }
 
-function doLogout(){
-  clearSession();
+window.doLogout = async function(){
+  const auth=_supaAuth();
+  try{ if(auth) await auth.signOut(); }catch(e){ console.warn(e); }
   currentUser = null;
   document.getElementById('app').classList.remove('show');
   document.getElementById('login-screen').style.display='flex';
-  document.getElementById('l-err').style.display='none';
+  const errEl=document.getElementById('l-err'); if(errEl) errEl.style.display='none';
+  const pf=document.getElementById('l-pass'); if(pf) pf.value='';
+};
+
+// استعادة الجلسة تلقائياً من Supabase (بدون أي كلمات سر محلية)
+async function restoreSession(){
+  const auth=_supaAuth();
+  if(!auth) return false;
+  try{
+    const { data } = await auth.getSession();
+    if(data && data.session && data.session.user){
+      await afterAuthLogin(data.session.user);
+      return true;
+    }
+  }catch(e){ console.warn('restoreSession failed:', e); }
+  return false;
 }
 
 // استعادة الجلسة تلقائياً بعد اكتمال تحميل الصفحة وكل الدوال
-window.addEventListener('DOMContentLoaded', ()=>{ try{ restoreSession(); }catch(e){ console.error(e); } });
+window.addEventListener('DOMContentLoaded', ()=>{ try{ applyBranding(); }catch(e){ console.error(e); } try{ restoreSession(); }catch(e){ console.error(e); } });
 
 // ═══════════════════════════════════════
 // NAVIGATION
@@ -1229,7 +1249,9 @@ window.createInvoiceFromCase=function(caseId){
   const existing=DB.invoices.find(i=>i.caseId===caseId);
   if(existing){toast('wrn','فاتورة موجودة بالفعل لهذه الحالة');return;}
   const inv={id:'INV'+Date.now(),patientId:c.patientId,caseId,amount:c.price,date:new Date().toISOString().split('T')[0],status:'معلقة'};
-  DB.invoices.push(inv);saveDB();
+  DB.invoices.push(inv);
+  if(typeof saveInvoiceToSupabase==='function'){ saveInvoiceToSupabase(inv); }
+  saveDB();
   toast('ok','تم إنشاء الفاتورة #'+inv.id+' ✓');
   addNotif('فاتورة','🧾','var(--blg)','فاتورة جديدة #'+inv.id,fmt(c.price)+' جنيه');
 };
@@ -1558,6 +1580,7 @@ function buildInvoices(){
         ${inv.status==='مدفوعة'?`<span class="bx bgr">✓ ${getMethod(inv.methodId).name||'مدفوعة'}</span>`:`<button class="btn bp btn-xs" onclick="payInvoice('${inv.id}')">💰 تحصيل</button>`}
         <button class="btn bs btn-xs" onclick="sendInvoiceWA('${inv.id}')">💬</button>
         <button class="btn bs btn-xs" onclick="printInvoice('${inv.id}')">🖨️</button>
+        <button class="btn bs btn-xs" onclick="invoiceToPDF('${inv.id}')">📄 PDF</button>
         <button class="btn bd btn-xs" onclick="deleteRecord('invoices','${inv.id}','invoices')">🗑️</button>
       </div></td>
     </tr>`;}).join('');
@@ -1602,9 +1625,9 @@ window.sendInvoiceWA=function(id){
   sendWAMessage(inv.patientId,'مرفق فاتورتك #'+id+' بقيمة '+fmt(inv.amount)+' جنيه. شكراً لثقتكم 🧾');
   toast('ok','تم إرسال الفاتورة عبر واتساب ✓');
 };
-window.printInvoice=function(id){
+function buildInvoicePrint(id){
   const inv=DB.invoices.find(x=>x.id===id);
-  if(!inv)return;
+  if(!inv)return null;
   const p=getPatient(inv.patientId);
   const s=DB.settings||{};
   const service=DB.cases.find(c=>c.id===inv.caseId)?.service||'خدمة طبية';
@@ -1684,11 +1707,61 @@ window.printInvoice=function(id){
   let root=document.getElementById('print-root');
   if(!root){ root=document.createElement('div'); root.id='print-root'; document.body.appendChild(root); }
   root.innerHTML=content;
+  return root;
+}
+
+// 🖨️ طباعة الفاتورة (نفس السلوك القديم)
+window.printInvoice=function(id){
+  const root=buildInvoicePrint(id);
+  if(!root){ toast('err','الفاتورة غير موجودة'); return; }
   document.body.classList.add('print-invoice');
   const cleanup=()=>{ document.body.classList.remove('print-invoice'); root.innerHTML=''; window.removeEventListener('afterprint',cleanup); };
   window.addEventListener('afterprint',cleanup);
   // مهلة بسيطة لتحميل الصور/الخطوط قبل فتح نافذة الطباعة
   setTimeout(()=>{ try{ window.print(); }catch(e){ toast('err','تعذّر فتح نافذة الطباعة'); cleanup(); } }, 350);
+};
+
+// 📄 حفظ الفاتورة كملف PDF (تنزيل مباشر)
+window.invoiceToPDF=async function(id){
+  if(typeof html2canvas==='undefined' || !(window.jspdf && window.jspdf.jsPDF)){
+    toast('err','جاري تحميل أداة PDF، حاول بعد ثانية');
+    return;
+  }
+  const root=buildInvoicePrint(id);
+  if(!root){ toast('err','الفاتورة غير موجودة'); return; }
+  const page=root.querySelector('.pr-page');
+  if(!page){ toast('err','تعذّر تجهيز الفاتورة'); return; }
+  const prev=root.getAttribute('style')||'';
+  // نعرضها خارج الشاشة حتى يلتقطها html2canvas
+  root.style.cssText='display:block;position:fixed;left:-10000px;top:0;width:148mm;background:#fff;';
+  toast('inf','⏳ جاري إنشاء ملف PDF...');
+  try{
+    if(document.fonts && document.fonts.ready){ try{ await document.fonts.ready; }catch(_){} }
+    const canvas=await html2canvas(page,{scale:2,useCORS:true,backgroundColor:'#ffffff'});
+    const img=canvas.toDataURL('image/jpeg',0.95);
+    const {jsPDF}=window.jspdf;
+    const pdf=new jsPDF({orientation:'portrait',unit:'mm',format:'a5'});
+    const pw=pdf.internal.pageSize.getWidth();
+    const ph=pdf.internal.pageSize.getHeight();
+    const imgH=canvas.height*pw/canvas.width;
+    let heightLeft=imgH, position=0;
+    pdf.addImage(img,'JPEG',0,position,pw,imgH);
+    heightLeft-=ph;
+    while(heightLeft>0){
+      position-=ph;
+      pdf.addPage();
+      pdf.addImage(img,'JPEG',0,position,pw,imgH);
+      heightLeft-=ph;
+    }
+    pdf.save('فاتورة-'+id+'.pdf');
+    toast('ok','✅ تم حفظ الفاتورة كملف PDF');
+  }catch(e){
+    console.error('PDF ERROR:',e);
+    toast('err','تعذّر إنشاء PDF');
+  }finally{
+    root.style.cssText=prev;
+    root.innerHTML='';
+  }
 };
 </script>
 <script>
@@ -2061,12 +2134,11 @@ function buildBranding(){
       <div class="fg"><label class="fl">الهاتف</label><input type="text" class="fc" id="br-phone" value="${s.phone||''}"></div>
       <div class="fg"><label class="fl">البريد الإلكتروني</label><input type="text" class="fc" id="br-email" value="${s.email||''}"></div>
     </div>
-    <div class="fg"><label class="fl">الشعار (رفع ملف)</label>
-      <div style="border:2px dashed var(--border);border-radius:9px;padding:24px;text-align:center;cursor:pointer" onclick="document.getElementById('logo-inp').click()">
-        <div style="font-size:28px;margin-bottom:6px">🦷</div>
-        <div style="font-size:12px;color:var(--t3)">انقر لرفع الشعار</div>
-        <input type="file" id="logo-inp" style="display:none" accept="image/*">
-      </div>
+    <div class="fg"><label class="fl">شعار النظام (يظهر أعلى الصفحة وفي شاشة الدخول)</label>
+      ${s.logo
+        ? `<div style="text-align:center"><img src="${s.logo}" style="max-width:120px;max-height:120px;border-radius:12px;border:1px solid var(--border)"><div class="fc2 gap8" style="justify-content:center;margin-top:8px"><button class="btn bs btn-xs" onclick="document.getElementById('logo-inp').click()">تغيير</button><button class="btn bd btn-xs" onclick="removeSystemLogo()">حذف</button></div></div>`
+        : `<div style="border:2px dashed var(--border);border-radius:9px;padding:24px;text-align:center;cursor:pointer" onclick="document.getElementById('logo-inp').click()"><div style="font-size:28px;margin-bottom:6px">🦷</div><div style="font-size:12px;color:var(--t3)">انقر لرفع الشعار (PNG / JPG)</div></div>`}
+      <input type="file" id="logo-inp" style="display:none" accept="image/*" onchange="handleLogoUpload(this)">
     </div>
   </div>
   <div class="card">
@@ -2096,7 +2168,42 @@ window.saveBranding=function(){
   DB.settings.address=document.getElementById('br-addr')?.value||DB.settings.address;
   DB.settings.phone=document.getElementById('br-phone')?.value||DB.settings.phone;
   DB.settings.email=document.getElementById('br-email')?.value||DB.settings.email;
-  saveDB();toast('ok','✅ تم حفظ بيانات العيادة');
+  saveDB();applyBranding();
+  if(typeof saveSettingsToSupabase==='function'){ saveSettingsToSupabase(); }
+  toast('ok','✅ تم حفظ بيانات العيادة');
+};
+// قراءة صورة الشعار وحفظها كـ dataURL في الإعدادات
+window.handleLogoUpload=function(inp){
+  const f=inp&&inp.files&&inp.files[0]; if(!f)return;
+  if(f.size>1500000){ toast('err','حجم الصورة كبير — استخدم صورة أصغر من 1.5MB'); return; }
+  const r=new FileReader();
+  r.onload=e=>{
+    DB.settings.logo=e.target.result;
+    saveDB(); applyBranding();
+    if(typeof saveSettingsToSupabase==='function'){ saveSettingsToSupabase(); }
+    if(typeof refreshPage==='function') refreshPage('branding');
+    toast('ok','✅ تم حفظ الشعار');
+  };
+  r.onerror=()=>toast('err','تعذّر قراءة الصورة');
+  r.readAsDataURL(f);
+};
+window.removeSystemLogo=function(){
+  DB.settings.logo=''; saveDB(); applyBranding();
+  if(typeof saveSettingsToSupabase==='function'){ saveSettingsToSupabase(); }
+  if(typeof refreshPage==='function') refreshPage('branding');
+  toast('ok','تم حذف الشعار');
+};
+// تطبيق اسم وشعار النظام على الشريط العلوي + شاشة الدخول + عنوان التبويب
+window.applyBranding=function(){
+  const s=DB.settings||{};
+  const name=s.clinicName||'عيادة الأسنان';
+  document.querySelectorAll('.tb-logo-text').forEach(el=>{ el.textContent=name; });
+  document.querySelectorAll('.login-title').forEach(el=>{ el.textContent=name; });
+  try{ document.title=name; }catch(_){}
+  const iconHTML = s.logo ? `<img src="${s.logo}" style="width:100%;height:100%;object-fit:cover;border-radius:inherit">` : '🦷';
+  document.querySelectorAll('.tb-logo-icon').forEach(el=>{ el.innerHTML=iconHTML; });
+  const loginLogo=document.querySelector('.login-logo');
+  if(loginLogo){ loginLogo.innerHTML = s.logo ? `<img src="${s.logo}" style="width:64px;height:64px;object-fit:cover;border-radius:14px">` : '🦷'; }
 };
 window.updateColor=function(which,val){
   document.documentElement.style.setProperty('--'+which,val);
@@ -2328,6 +2435,8 @@ window.saveSettings=function(){
   DB.settings.taxNo=document.getElementById('st-taxno')?.value||'';
   DB.settings.currency=document.getElementById('st-cur')?.value||'EGP';
   saveDB();
+  applyBranding();
+  if(typeof saveSettingsToSupabase==='function'){ saveSettingsToSupabase(); }
   renderAllPages();updateBadges();
   sp('settings',document.querySelector('.ni.on'));
   toast('ok','✅ تم حفظ الإعدادات بنجاح');
@@ -2476,10 +2585,13 @@ window.savePatient=function(id){
       p.address=document.getElementById('m-paddress').value;
       p.history=document.getElementById('m-phistory').value;
       p.emergency=document.getElementById('m-pemergency').value;
+      if(typeof updatePatientInSupabase==='function'){ updatePatientInSupabase(p); }
     }
   } else {
     const newId2='P'+String(DB.patients.length+1).padStart(3,'0');
-    DB.patients.push({id:newId2,name,phone,dob:document.getElementById('m-pdob').value,gender:document.getElementById('m-pgender').value,address:document.getElementById('m-paddress').value,history:document.getElementById('m-phistory').value,emergency:document.getElementById('m-pemergency').value,balance:0,createdAt:new Date().toISOString().split('T')[0]});
+    const newPatient={id:newId2,name,phone,dob:document.getElementById('m-pdob').value,gender:document.getElementById('m-pgender').value,address:document.getElementById('m-paddress').value,history:document.getElementById('m-phistory').value,emergency:document.getElementById('m-pemergency').value,balance:0,createdAt:new Date().toISOString().split('T')[0]};
+    DB.patients.push(newPatient);
+    if(typeof savePatientToSupabase==='function'){ savePatientToSupabase(newPatient); }
   }
   saveDB();closeModals();refreshPage('patients');refreshPage('dashboard');
   toast('ok',(id?'تم تعديل':'تم تسجيل')+' المريض ✓');updateBadges();
@@ -2532,9 +2644,13 @@ window.saveAppt=function(id){
   }
   if(id){
     const a=DB.appointments.find(x=>x.id===id);
-    if(a){a.patientId=patientId;a.doctorId=doctorId;a.type=type;a.date=date;a.time=time;a.notes=document.getElementById('m-aptnotes').value;}
+    if(a){a.patientId=patientId;a.doctorId=doctorId;a.type=type;a.date=date;a.time=time;a.notes=document.getElementById('m-aptnotes').value;
+      if(typeof updateAppointmentInSupabase==='function'){ updateAppointmentInSupabase(a); }
+    }
   } else {
-    DB.appointments.push({id:'A'+Date.now(),patientId,doctorId,type,date,time,status:'قادم',notes:document.getElementById('m-aptnotes').value,createdAt:new Date().toISOString().split('T')[0]});
+    const newAppt={id:'A'+Date.now(),patientId,doctorId,type,date,time,status:'قادم',notes:document.getElementById('m-aptnotes').value,createdAt:new Date().toISOString().split('T')[0]};
+    DB.appointments.push(newAppt);
+    if(typeof saveAppointmentToSupabase==='function'){ saveAppointmentToSupabase(newAppt); }
     const p=getPatient(patientId);
     sendWAMessage(patientId,'تم تأكيد حجزك يوم '+fmtDate(date)+' الساعة '+time+' 📅');
     addNotif('موعد','📅','var(--tg)','موعد جديد - '+p.name,type+' • '+fmtDate(date));
@@ -2639,8 +2755,8 @@ window.saveCase=function(id){
   const docId=document.getElementById('m-cdoctor').value;
   const rs=parseFloat(document.getElementById('m-cratio').value);
   const data={patientId:document.getElementById('m-cpatient').value,doctorId:docId,service:document.getElementById('m-cservice').value,teeth:document.getElementById('m-cteeth').value,price,collected,ratioSnapshot:isNaN(rs)?(getDoctor(docId).ratio||40):rs,labCost:parseFloat(document.getElementById('m-clab').value)||0,matCost:parseFloat(document.getElementById('m-cmat').value)||0,nurseCost:parseFloat(document.getElementById('m-cnurse').value)||0,otherCost:parseFloat(document.getElementById('m-cother').value)||0,status:document.getElementById('m-cstatus').value};
-  if(id){Object.assign(DB.cases.find(x=>x.id===id),data);}
-  else{DB.cases.push({id:'C'+Date.now(),...data,createdAt:new Date().toISOString().split('T')[0]});}
+  if(id){const cs=DB.cases.find(x=>x.id===id); Object.assign(cs,data); if(typeof updateCaseInSupabase==='function'){ updateCaseInSupabase(cs); }}
+  else{const newCase={id:'C'+Date.now(),...data,createdAt:new Date().toISOString().split('T')[0]}; DB.cases.push(newCase); if(typeof saveCaseToSupabase==='function'){ saveCaseToSupabase(newCase); }}
   saveDB();closeModals();refreshPage('services');refreshPage('dashboard');refreshPage('doctors-acc');refreshPage('accounting');refreshPage('partners');
   toast('ok','✅ تم '+(id?'تعديل':'حفظ')+' الحالة');
 };
@@ -2808,8 +2924,8 @@ window.saveInvItem=function(id){
   const name=document.getElementById('m-iname').value.trim();
   if(!name){toast('err','يرجى إدخال اسم الصنف');return;}
   const data={name,category:document.getElementById('m-icat').value,buyPrice:parseFloat(document.getElementById('m-ibuy').value)||0,qty:parseInt(document.getElementById('m-iqty').value)||0,minQty:parseInt(document.getElementById('m-imin').value)||5,supplier:document.getElementById('m-isupplier').value};
-  if(id){Object.assign(DB.inventory.find(x=>x.id===id),data);}
-  else{DB.inventory.push({id:'I'+Date.now(),...data});}
+  if(id){const it=DB.inventory.find(x=>x.id===id); Object.assign(it,data); if(typeof updateInventoryInSupabase==='function'){ updateInventoryInSupabase(it); }}
+  else{const newItem={id:'I'+Date.now(),...data}; DB.inventory.push(newItem); if(typeof saveInventoryToSupabase==='function'){ saveInventoryToSupabase(newItem); }}
   saveDB();closeModals();refreshPage('inventory');updateBadges();
   toast('ok','✅ تم '+(id?'تعديل':'إضافة')+' الصنف');
 };
@@ -2995,8 +3111,8 @@ window.saveInvoice=function(id){
   if(!amount){toast('err','يرجى إدخال المبلغ');return;}
   const installments=(window.INV_PLAN||[]).filter(it=>it.amount>0||it.date);
   const data={patientId:document.getElementById('m-invpatient').value,caseId:document.getElementById('m-invcase').value,amount,date:document.getElementById('m-invdate').value,status:document.getElementById('m-invstatus').value,installments};
-  if(id){Object.assign(DB.invoices.find(x=>x.id===id),data);}
-  else{DB.invoices.push({id:'INV'+Date.now(),...data});}
+  if(id){const iv=DB.invoices.find(x=>x.id===id); Object.assign(iv,data); if(typeof updateInvoiceInSupabase==='function'){ updateInvoiceInSupabase(iv); }}
+  else{const newInv={id:'INV'+Date.now(),...data}; DB.invoices.push(newInv); if(typeof saveInvoiceToSupabase==='function'){ saveInvoiceToSupabase(newInv); }}
   saveDB();closeModals();refreshPage('invoices');refreshPage('dashboard');
   toast('ok','✅ تم '+(id?'تعديل':'إنشاء')+' الفاتورة');
 };
@@ -3011,7 +3127,9 @@ window.saveQuickPatient=function(){
   const phone=(document.getElementById('qp-phone').value||'').trim();
   if(!name){toast('err','اكتب اسم المريض');return;}
   const newId='P'+Date.now();
-  DB.patients.push({id:newId,name,phone,dob:'',gender:'ذكر',address:'',history:'',emergency:'',balance:0,createdAt:new Date().toISOString().split('T')[0]});
+  const newQuickPatient={id:newId,name,phone,dob:'',gender:'ذكر',address:'',history:'',emergency:'',balance:0,createdAt:new Date().toISOString().split('T')[0]};
+  DB.patients.push(newQuickPatient);
+  if(typeof savePatientToSupabase==='function'){ savePatientToSupabase(newQuickPatient); }
   saveDB();
   // حدّث قائمة المريض في الفاتورة واختَر الجديد بدون إغلاق النافذة
   const sel=document.getElementById('m-invpatient');
@@ -3144,6 +3262,10 @@ window.deleteRecord=function(table,id,refreshId){
     const arr=DB[table];
     const idx=arr.findIndex(x=>x.id===id);
     if(idx>-1){arr.splice(idx,1);saveDB();}
+    // مزامنة الحذف مع Supabase حسب الجدول
+    const supaDel={cases:'deleteCaseFromSupabase',invoices:'deleteInvoiceFromSupabase',inventory:'deleteInventoryFromSupabase',appointments:'deleteAppointmentFromSupabase',patients:'deletePatientFromSupabase'};
+    const dfn=supaDel[table];
+    if(dfn && typeof window[dfn]==='function'){ window[dfn](id); }
     if(refreshId)refreshPage(refreshId);
     refreshPage('dashboard');updateBadges();
     toast('ok','✅ تم الحذف');
@@ -3520,7 +3642,9 @@ function recordPayment({amount,methodId,direction,category,refId,note,date}){
   const comm = direction==='in' ? amount*methodCommission(methodId)/100 : 0;
   const net = direction==='in' ? amount-comm : amount;
   const pay={id:'PAY'+Date.now()+Math.floor(Math.random()*100),date:date||getTodayStr(),amount,methodId,direction,category:category||'',refId:refId||'',note:note||'',commission:comm,net};
-  DB.payments.push(pay); saveDB(); return pay;
+  DB.payments.push(pay);
+  if(typeof savePaymentToSupabase==='function'){ savePaymentToSupabase(pay); }
+  saveDB(); return pay;
 }
 function methodBalance(id){
   return DB.payments.filter(p=>p.methodId===id).reduce((s,p)=>s + (p.direction==='in'? (p.net) : -(p.amount)),0);
@@ -4162,6 +4286,8 @@ window.previewLatestInvoice=function(){
   printInvoice(DB.invoices[DB.invoices.length-1].id);
 };
 </script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="supabase.js"></script>
 </body>
