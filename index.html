@@ -320,38 +320,48 @@ textarea.fc{resize:vertical}
   <!-- BODY -->
   <div id="body-row">
     <div id="sidebar">
-      <div class="ns">الرئيسية</div>
+      <div class="ns nav-group-h" onclick="toggleNavGroup(this)" style="cursor:pointer;display:flex;align-items:center">🏥 العيادة<span class="ng-chev" style="margin-right:auto">▾</span></div>
+      <div class="ng-items">
       <div class="ni on" onclick="sp('dashboard',this)"><span class="ni-icon">📊</span>لوحة التحكم</div>
-      <div class="ns">المرضى والطب</div>
-      <div class="ni" onclick="sp('patients',this)"><span class="ni-icon">👥</span>إدارة المرضى</div>
-      <div class="ni" onclick="sp('toothchart',this)"><span class="ni-icon">🦷</span>شجرة الأسنان</div>
-      <div class="ns">الحجوزات</div>
       <div class="ni" onclick="sp('appointments',this)" id="nav-appt"><span class="ni-icon">📅</span>المواعيد<span class="ni-badge" id="appt-badge">0</span></div>
-      <div class="ns">الخدمات</div>
+      <div class="ni" onclick="sp('patients',this)"><span class="ni-icon">👥</span>إدارة المرضى</div>
       <div class="ni" onclick="sp('services',this)"><span class="ni-icon">⚕️</span>الحالات والخدمات</div>
+      <div class="ni" onclick="sp('toothchart',this)"><span class="ni-icon">🦷</span>شجرة الأسنان</div>
       <div class="ni" onclick="sp('catalog',this)"><span class="ni-icon">🗂️</span>كتالوج الخدمات والباقات</div>
-      <div class="ns">المالية</div>
-      <div class="ni" onclick="sp('accounting',this)"><span class="ni-icon">🧮</span>المحاسبة والأرباح</div>
+      </div>
+      <div class="ns nav-group-h" onclick="toggleNavGroup(this)" style="cursor:pointer;display:flex;align-items:center">💰 المالية<span class="ng-chev" style="margin-right:auto">▾</span></div>
+      <div class="ng-items">
       <div class="ni" onclick="sp('treasury',this)"><span class="ni-icon">💼</span>الخزينة وحسابات الدفع</div>
+      <div class="ni" onclick="sp('invoices',this)"><span class="ni-icon">🧾</span>الفواتير</div>
+      <div class="ni" onclick="sp('quotes',this)"><span class="ni-icon">📑</span>عروض الأسعار</div>
+      <div class="ni" onclick="sp('accounting',this)"><span class="ni-icon">🧮</span>المحاسبة والأرباح</div>
       <div class="ni" onclick="sp('doctors-acc',this)"><span class="ni-icon">👨‍⚕️</span>حسابات الأطباء</div>
-      <div class="ni" onclick="sp('labs',this)"><span class="ni-icon">🔬</span>المعامل</div>
-      <div class="ni" onclick="sp('inventory',this)" id="nav-inv"><span class="ni-icon">📦</span>المخزن<span class="ni-badge" id="inv-badge" style="display:none">!</span></div>
-      <div class="ni" onclick="sp('staff',this)"><span class="ni-icon">👷</span>الموظفون</div>
-      <div class="ni" onclick="sp('expenses',this)"><span class="ni-icon">💸</span>المصروفات</div>
       <div class="ni" onclick="sp('partners',this)"><span class="ni-icon">🤝</span>الشركاء</div>
-      <div class="ns">التسويق</div>
+      <div class="ni" onclick="sp('expenses',this)"><span class="ni-icon">💸</span>المصروفات</div>
+      </div>
+      <div class="ns nav-group-h" onclick="toggleNavGroup(this)" style="cursor:pointer;display:flex;align-items:center">📦 الموارد<span class="ng-chev" style="margin-right:auto">▾</span></div>
+      <div class="ng-items">
+      <div class="ni" onclick="sp('inventory',this)" id="nav-inv"><span class="ni-icon">📦</span>المخزن<span class="ni-badge" id="inv-badge" style="display:none">!</span></div>
+      <div class="ni" onclick="sp('labs',this)"><span class="ni-icon">🔬</span>المعامل</div>
+      <div class="ni" onclick="sp('staff',this)"><span class="ni-icon">👷</span>الموظفون</div>
+      </div>
+      <div class="ns nav-group-h" onclick="toggleNavGroup(this)" style="cursor:pointer;display:flex;align-items:center">📣 التسويق<span class="ng-chev" style="margin-right:auto">▾</span></div>
+      <div class="ng-items">
       <div class="ni" onclick="sp('whatsapp',this)" id="nav-wa"><span class="ni-icon">💬</span>واتساب<span class="ni-badge" id="wa-badge">0</span></div>
       <div class="ni" onclick="sp('campaigns',this)"><span class="ni-icon">📣</span>الحملات التسويقية</div>
-      <div class="ni" onclick="sp('invoices',this)"><span class="ni-icon">🧾</span>الفواتير</div>
-      <div class="ni" onclick="sp('inv-settings',this)"><span class="ni-icon">🧩</span>إعدادات الفاتورة</div>
       <div class="ni" onclick="sp('sms',this)"><span class="ni-icon">📱</span>رسائل SMS</div>
-      <div class="ni" onclick="sp('branding',this)"><span class="ni-icon">🎨</span>هوية العيادة</div>
-      <div class="ns">الإدارة</div>
+      </div>
+      <div class="ns nav-group-h" onclick="toggleNavGroup(this)" style="cursor:pointer;display:flex;align-items:center">⚙️ الإدارة والإعدادات<span class="ng-chev" style="margin-right:auto">▾</span></div>
+      <div class="ng-items">
       <div class="ni" onclick="sp('reports',this)"><span class="ni-icon">📈</span>التقارير</div>
       <div class="ni" onclick="sp('notifications',this)"><span class="ni-icon">🔔</span>الإشعارات<span class="ni-badge" id="notif-badge">0</span></div>
+      <div class="ni" onclick="sp('branding',this)"><span class="ni-icon">🎨</span>هوية العيادة</div>
+      <div class="ni" onclick="sp('inv-settings',this)"><span class="ni-icon">🧩</span>إعدادات الفاتورة</div>
       <div class="ni" onclick="sp('users',this)"><span class="ni-icon">🔐</span>المستخدمون</div>
-      <div class="ni" onclick="sp('settings',this)"><span class="ni-icon">⚙️</span>الإعدادات</div>
+      <div class="ni" onclick="sp('settings',this)"><span class="ni-icon">⚙️</span>الإعدادات العامة</div>
       <div class="ni" onclick="sp('backup',this)"><span class="ni-icon">🗄️</span>النسخ الاحتياطي</div>
+      </div>
+    
     </div>
 
     <div id="content">
@@ -525,6 +535,7 @@ function ensureDefaults(){
   if(!DB.settings) DB.settings={};
   if(DB.settings.taxEnabled===undefined) DB.settings.taxEnabled=false;
   if(!DB.settings.currency) DB.settings.currency='EGP';
+  if(!DB.quotes) DB.quotes=[];
   if(DB.settings.taxRate===undefined) DB.settings.taxRate=14;
   if(DB.settings.clinicName===undefined) DB.settings.clinicName='عيادة البسمة لطب الأسنان';
   if(DB.settings.address===undefined) DB.settings.address='12 شارع التحرير، القاهرة';
@@ -733,7 +744,7 @@ function getTodayStr(){ return new Date().toISOString().split('T')[0] }
 
 // Calculations
 // ── معادلات ربح الحالة (متوافقة مع المواصفات) ──
-function caseCollected(c){ return (c.collected!=null && c.collected!=='') ? Number(c.collected) : (c.price||0); } // الدفعات المحصلة
+function caseCollected(c){ return (c.collected!=null && c.collected!=='') ? Number(c.collected) : 0; } // المحصّل فعليًا (0 افتراضيًا)
 function caseExpensesTotal(c){ return (c.labCost||0)+(c.matCost||0)+(c.nurseCost||0)+(c.otherCost||0); }          // إجمالي مصروفات الحالة
 function caseInitialProfit(c){ return caseCollected(c) - caseExpensesTotal(c); }                                  // ربح الحالة الأولي = المحصّل − المصروفات
 function calcCaseNet(c){ return caseInitialProfit(c); }                                                           // (اسم قديم متوافق)
@@ -743,7 +754,7 @@ function caseClinicProfit(c){ return caseInitialProfit(c) - caseDoctorShare(c); 
 function calcDoctorEarned(doctorId){
   return DB.cases.filter(c=>c.doctorId===doctorId).reduce((sum,c)=>sum+caseDoctorShare(c),0);
 }
-function calcTotalRevenue(){ return DB.invoices.filter(i=>i.status==='مدفوعة').reduce((s,i)=>s+(i.amount||0),0) }
+function calcTotalRevenue(){ return DB.payments.filter(p=>p.direction==='in').reduce((s,p)=>s+(p.net!=null?Number(p.net):Number(p.amount)||0),0) }
 function calcTotalExpenses(){ return DB.expenses.reduce((s,e)=>s+(e.amount||0),0) }
 function calcTotalDoctorShares(){
   return DB.cases.reduce((sum,c)=>sum+caseDoctorShare(c),0);
@@ -853,6 +864,7 @@ function buildPage(id){
     whatsapp: buildWhatsApp,
     campaigns: buildCampaigns,
     invoices: buildInvoices,
+    quotes: buildQuotes,
     'inv-settings': buildInvoiceSettings,
     sms: buildSMS,
     branding: buildBranding,
@@ -965,12 +977,13 @@ function buildPatients(){
   const rows = DB.patients.map(p=>`
     <tr>
       <td><span class="bx bt">${p.id}</span></td>
-      <td><div class="fc2 gap8"><div class="av" style="width:30px;height:30px;font-size:11px">${p.name.substring(0,2)}</div><div><div style="font-size:13px;font-weight:600">${p.name}</div><div style="font-size:11px;color:var(--t3)">${p.gender}</div></div></div></td>
+      <td><div class="fc2 gap8" style="cursor:pointer" onclick="openPatientFile('${p.id}')"><div class="av" style="width:30px;height:30px;font-size:11px">${p.name.substring(0,2)}</div><div><div style="font-size:13px;font-weight:600;color:var(--teal)">${p.name}</div><div style="font-size:11px;color:var(--t3)">${p.gender}</div></div></div></td>
       <td>${p.phone}</td>
       <td>${p.dob?new Date().getFullYear()-parseInt(p.dob.split('-')[0])+' سنة':'-'}</td>
       <td>${fmtDate(p.createdAt)}</td>
       <td class="${p.balance>0?'tr fw7':'tgr'}">${p.balance>0?fmt(p.balance)+' '+curSym():'0 ✓'}</td>
       <td><div class="fc2 gap8">
+        <button class="btn bp btn-xs" onclick="openPatientFile('${p.id}')">📋 ملف</button>
         <button class="btn bs btn-xs" onclick="openModal('m-patient','edit','${p.id}')">✏️ تعديل</button>
         <button class="btn bs btn-xs" onclick="openModal('m-case','add',null,'${p.id}')">⚕️ حالة</button>
         <button class="btn bs btn-xs" onclick="openWAChat('${p.id}')">💬</button>
@@ -1189,6 +1202,7 @@ function filterAppts(status){
       <td>${a.time}</td><td>${fmtDate(a.date)}</td><td>${p.name}</td><td>${d.name}</td><td>${a.type}</td>
       <td>${statusBadge(a.status)}</td>
       <td><div class="fc2 gap8">
+        <button class="btn bp btn-xs" onclick="startCaseFromAppt('${a.id}')">⚕️ حالة</button>
         <button class="btn bs btn-xs" onclick="openModal('m-appt','edit','${a.id}')">✏️</button>
         <button class="btn bs btn-xs" onclick="changeApptStatus('${a.id}','حضر')">✅</button>
         <button class="btn bd btn-xs" onclick="deleteRecord('appointments','${a.id}','appointments')">🗑️</button>
@@ -1217,7 +1231,8 @@ function buildServices(){
       <td>${statusBadge(c.status)}</td>
       <td><div class="fc2 gap8">
         <button class="btn bs btn-xs" onclick="openModal('m-case','edit','${c.id}')">✏️</button>
-        <button class="btn bs btn-xs" onclick="openModal('m-casepay','view','${c.id}')" title="مدفوعات الحالة">💵</button>
+        <button class="btn bp btn-xs" onclick="collectForCase('${c.id}')">💰 تحصيل</button>
+        <button class="btn bs btn-xs" onclick="openModal('m-casepay','view','${c.id}')" title="تعديل المحصّل يدويًا (متقدّم)">💵</button>
         <button class="btn bs btn-xs" onclick="createInvoiceFromCase('${c.id}')">🧾</button>
         <button class="btn bd btn-xs" onclick="deleteRecord('cases','${c.id}','services')">🗑️</button>
       </div></td>
@@ -1248,8 +1263,9 @@ window.createInvoiceFromCase=function(caseId){
   if(!c)return;
   const existing=DB.invoices.find(i=>i.caseId===caseId);
   if(existing){toast('wrn','فاتورة موجودة بالفعل لهذه الحالة');return;}
-  const inv={id:'INV'+Date.now(),patientId:c.patientId,caseId,amount:c.price,date:new Date().toISOString().split('T')[0],status:'معلقة'};
+  const inv={id:'INV'+Date.now(),patientId:c.patientId,caseId,amount:c.price,paid:0,date:new Date().toISOString().split('T')[0],status:'معلقة'};
   DB.invoices.push(inv);
+  { const pt=DB.patients.find(x=>x.id===c.patientId); if(pt){ pt.balance=(Number(pt.balance)||0)+(Number(c.price)||0); } }
   if(typeof saveInvoiceToSupabase==='function'){ saveInvoiceToSupabase(inv); }
   saveDB();
   toast('ok','تم إنشاء الفاتورة #'+inv.id+' ✓');
@@ -1323,6 +1339,402 @@ window.showDoctorStatement=function(id){
   </div>`;
   showInfoModal('كشف حساب',html);
 };
+
+
+// ═══════════════════════════════════════
+// 📋 ملف المريض 360° (Patient File) + أزرار سريعة
+// ═══════════════════════════════════════
+window.collectFromPatient=function(id){
+  const out=DB.invoices.filter(i=>i.patientId===id && ((Number(i.amount)||0)-(Number(i.paid)||0))>0);
+  if(!out.length){ toast('inf','لا توجد فواتير مستحقة على هذا المريض'); return; }
+  out.sort((a,b)=>(a.date||'').localeCompare(b.date||''));
+  payInvoice(out[0].id);
+};
+// 💰 تحصيل موحّد للحالة: ينشئ فاتورة لو مش موجودة ثم يحصّل عبر نفس مسار الفاتورة
+window.collectForCase=function(caseId){
+  const c=DB.cases.find(x=>x.id===caseId);
+  if(!c){ toast('err','الحالة غير موجودة'); return; }
+  let inv=DB.invoices.find(i=>i.caseId===caseId);
+  if(!inv){
+    inv={id:'INV'+Date.now(),patientId:c.patientId,caseId,amount:c.price,paid:0,date:new Date().toISOString().split('T')[0],status:'معلقة'};
+    DB.invoices.push(inv);
+    const pt=DB.patients.find(x=>x.id===c.patientId); if(pt){ pt.balance=(Number(pt.balance)||0)+(Number(c.price)||0); }
+    if(typeof saveInvoiceToSupabase==='function'){ saveInvoiceToSupabase(inv); }
+    saveDB();
+  }
+  const due=(Number(inv.amount)||0)-(Number(inv.paid)||0);
+  if(due<=0){ toast('inf','هذه الحالة محصّلة بالكامل ✓'); return; }
+  if(document.getElementById('info-modal')) document.getElementById('info-modal').remove();
+  payInvoice(inv.id);
+};
+
+// ═══════════════════════════════════════════════════════
+// 📑 وحدة عروض الأسعار — الخطوة 1 (الأساس + الإنشاء + الخصومات)
+//    مستقلة تماماً — DB.quotes يتزامن تلقائياً عبر app_state
+// ═══════════════════════════════════════════════════════
+function qFmt(n,cur){ const info=CUR_INFO[cur]||CUR_INFO.EGP; return Number(n||0).toLocaleString('en-US',{maximumFractionDigits:2})+' '+info.sym; }
+function quoteTotals(q){
+  let subtotal=0;
+  (q.items||[]).forEach(it=>{ subtotal += (Number(it.qty)||1)*(Number(it.price)||0) - (Number(it.disc)||0); });
+  if(subtotal<0) subtotal=0;
+  let wholeDisc = q.discountMode==='percent' ? subtotal*(Number(q.discountValue)||0)/100 : (Number(q.discountValue)||0);
+  if(wholeDisc<0) wholeDisc=0; if(wholeDisc>subtotal) wholeDisc=subtotal;
+  return {subtotal, wholeDisc, total: subtotal-wholeDisc};
+}
+function buildQuotes(){
+  const rows=(DB.quotes||[]).slice().reverse().map(q=>{
+    const t=quoteTotals(q);
+    return `<tr>
+      <td><span class="bx bt">${q.id}</span></td>
+      <td>${q.clientName||'-'}</td>
+      <td>${fmtDate(q.date)}</td>
+      <td>${(q.items||[]).length}</td>
+      <td class="fw7">${qFmt(t.total,q.currency)}</td>
+      <td><div class="fc2 gap8">
+        <button class="btn bs btn-xs" onclick="printQuote('${q.id}')">🖨️</button>
+        <button class="btn bs btn-xs" onclick="quoteToPDF('${q.id}')">📄 PDF</button>
+        <button class="btn bp btn-xs" onclick="sendQuoteWA('${q.id}')">💬 واتساب</button>
+        <button class="btn bs btn-xs" onclick="openQuoteModal('${q.id}')">✏️</button>
+        <button class="btn bd btn-xs" onclick="deleteRecord('quotes','${q.id}','quotes')">🗑️</button>
+      </div></td>
+    </tr>`;
+  }).join('') || `<tr><td colspan="6" class="txs tm" style="text-align:center">لا يوجد عروض أسعار بعد</td></tr>`;
+  return `
+  <div class="fc2 jb mb20">
+    <span style="font-size:16px;font-weight:700">📑 عروض الأسعار / الفواتير التوضيحية</span>
+    <button class="btn bp" onclick="openQuoteModal()">➕ عرض سعر جديد</button>
+  </div>
+  <div class="card"><div class="tw"><table>
+    <thead><tr><th>#</th><th>العميل</th><th>التاريخ</th><th>بنود</th><th>الإجمالي</th><th>إجراءات</th></tr></thead>
+    <tbody>${rows}</tbody>
+  </table></div></div>`;
+}
+function qItemRowHTML(it){
+  it=it||{};
+  return `<div class="q-row" style="display:grid;grid-template-columns:1fr 50px 80px 70px 26px;gap:5px;margin-bottom:5px">
+    <input class="fc q-desc" placeholder="وصف الخدمة" value="${it.desc||''}">
+    <input class="fc q-qty" type="number" value="${it.qty||1}" oninput="qRecalc()" title="كمية">
+    <input class="fc q-price" type="number" placeholder="سعر" value="${(it.price!=null?it.price:'')}" oninput="qRecalc()">
+    <input class="fc q-disc" type="number" placeholder="خصم" value="${it.disc||0}" oninput="qRecalc()" title="خصم البند">
+    <button class="btn bd btn-xs" onclick="this.closest('.q-row').remove();qRecalc()">✕</button>
+  </div>`;
+}
+window.qAddItem=function(){ document.getElementById('q-items').insertAdjacentHTML('beforeend', qItemRowHTML({qty:1})); };
+function qInstRowHTML(ins){
+  ins=ins||{};
+  return `<div class="qi-row" style="display:grid;grid-template-columns:1fr 140px 100px 26px;gap:5px;margin-bottom:5px">
+    <input class="fc qi-label" value="${ins.label||'دفعة'}">
+    <input class="fc qi-date" type="date" value="${ins.date||''}">
+    <input class="fc qi-amt" type="number" value="${ins.amount||0}">
+    <button class="btn bd btn-xs" onclick="this.closest('.qi-row').remove()">✕</button>
+  </div>`;
+}
+window.qGenInst=function(){
+  const t=qRecalc().total;
+  const n=Math.max(1, parseInt(document.getElementById('q-instn').value)||1);
+  const start=document.getElementById('q-inststart').value||new Date().toISOString().split('T')[0];
+  const step=parseInt(document.getElementById('q-instfreq').value)||30;
+  const per=Math.round((t/n)*100)/100;
+  let rows=''; let d=new Date(start);
+  for(let i=0;i<n;i++){
+    const amt = i===n-1 ? Math.round((t-per*(n-1))*100)/100 : per;
+    rows+=qInstRowHTML({label:'الدفعة '+(i+1), date:d.toISOString().split('T')[0], amount:amt});
+    d.setDate(d.getDate()+step);
+  }
+  document.getElementById('q-insts').innerHTML=rows;
+};
+function buildQuotePrint(id){
+  const q=(DB.quotes||[]).find(x=>x.id===id); if(!q) return null;
+  const s=DB.settings||{}; const t=quoteTotals(q); const cur=q.currency;
+  const itemRows=(q.items||[]).map((it,idx)=>{ const line=(Number(it.qty)||1)*(Number(it.price)||0)-(Number(it.disc)||0); return `<tr><td>${idx+1}</td><td>${it.desc||''}</td><td>${it.qty||1}</td><td>${qFmt(it.price,cur)}</td><td>${qFmt(it.disc||0,cur)}</td><td>${qFmt(line,cur)}</td></tr>`; }).join('');
+  const instRows=(q.installments||[]).map((ins,i)=>`<tr><td>${i+1}</td><td>${ins.label||''}</td><td>${fmtDate(ins.date)}</td><td>${qFmt(ins.amount,cur)}</td></tr>`).join('');
+  const logo = s.logo ? `<img src="${s.logo}" class="pr-logo">` : `<div class="pr-logo-emoji">🦷</div>`;
+  const content=`<div class="pr-page" style="width:200mm"><div class="pr-content">
+    <div class="pr-hdr">${logo}<div class="pr-hi"><h1>${s.clinicName||'عيادة الأسنان'}</h1><div class="pr-muted">${s.address||''}${s.phone?(' • '+s.phone):''}</div></div>
+      <div style="text-align:left"><div style="font-size:15px;font-weight:800;color:#2346d5">عرض سعر</div><div class="pr-muted">${q.id}</div></div></div>
+    <div class="pr-meta"><span>العميل: <b>${q.clientName||'-'}</b></span><span>التاريخ: ${fmtDate(q.date)}</span><span>العملة: ${(CUR_INFO[cur]||{}).name||cur}</span></div>
+    <table><thead><tr><th>#</th><th>الوصف</th><th>كمية</th><th>السعر</th><th>خصم</th><th>الإجمالي</th></tr></thead><tbody>${itemRows}</tbody></table>
+    <div style="margin-inline-start:auto;width:60%"><div class="pr-meta" style="display:block">
+      <div style="display:flex;justify-content:space-between"><span>الإجمالي قبل الخصم</span><b>${qFmt(t.subtotal,cur)}</b></div>
+      <div style="display:flex;justify-content:space-between"><span>خصم الفاتورة</span><b>${qFmt(t.wholeDisc,cur)}</b></div>
+      <div style="display:flex;justify-content:space-between;font-size:14px;color:#2346d5"><span>الإجمالي النهائي</span><b>${qFmt(t.total,cur)}</b></div>
+    </div></div>
+    ${instRows?`<div class="pr-sect">خطة الدفعات</div><table><thead><tr><th>#</th><th>الدفعة</th><th>التاريخ</th><th>المبلغ</th></tr></thead><tbody>${instRows}</tbody></table>`:''}
+    ${q.notes?`<div class="pr-muted" style="margin-top:8px">ملاحظات: ${q.notes}</div>`:''}
+    <div class="pr-muted" style="margin-top:14px;text-align:center">هذا عرض سعر توضيحي وليس فاتورة ضريبية.</div>
+  </div></div>`;
+  let root=document.getElementById('print-root');
+  if(!root){ root=document.createElement('div'); root.id='print-root'; document.body.appendChild(root); }
+  root.innerHTML=content; return root;
+}
+window.printQuote=function(id){
+  const root=buildQuotePrint(id); if(!root){ toast('err','العرض غير موجود'); return; }
+  document.body.classList.add('print-invoice');
+  const cleanup=()=>{ document.body.classList.remove('print-invoice'); root.innerHTML=''; window.removeEventListener('afterprint',cleanup); };
+  window.addEventListener('afterprint',cleanup);
+  setTimeout(()=>{ try{ window.print(); }catch(e){ cleanup(); } },350);
+};
+window.quoteToPDF=async function(id){
+  if(typeof html2canvas==='undefined' || !(window.jspdf&&window.jspdf.jsPDF)){ toast('err','جاري تحميل أداة PDF، حاول بعد ثانية'); return; }
+  const root=buildQuotePrint(id); if(!root){ toast('err','العرض غير موجود'); return; }
+  const page=root.querySelector('.pr-page'); const prev=root.getAttribute('style')||'';
+  root.style.cssText='display:block;position:fixed;left:-10000px;top:0;width:210mm;background:#fff;';
+  toast('inf','⏳ جاري إنشاء PDF...');
+  try{
+    if(document.fonts&&document.fonts.ready){ try{ await document.fonts.ready; }catch(_){} }
+    const canvas=await html2canvas(page,{scale:2,useCORS:true,backgroundColor:'#ffffff'});
+    const img=canvas.toDataURL('image/jpeg',0.95);
+    const {jsPDF}=window.jspdf; const pdf=new jsPDF({orientation:'portrait',unit:'mm',format:'a4'});
+    const pw=pdf.internal.pageSize.getWidth(), ph=pdf.internal.pageSize.getHeight();
+    const imgH=canvas.height*pw/canvas.width; let left=imgH, pos=0;
+    pdf.addImage(img,'JPEG',0,pos,pw,imgH); left-=ph;
+    while(left>0){ pos-=ph; pdf.addPage(); pdf.addImage(img,'JPEG',0,pos,pw,imgH); left-=ph; }
+    pdf.save('عرض-سعر-'+id+'.pdf'); toast('ok','✅ تم حفظ PDF');
+  }catch(e){ console.error(e); toast('err','تعذّر إنشاء PDF'); }
+  finally{ root.style.cssText=prev; root.innerHTML=''; }
+};
+window.sendQuoteWA=function(id){
+  const q=(DB.quotes||[]).find(x=>x.id===id); if(!q){ toast('err','العرض غير موجود'); return; }
+  const t=quoteTotals(q); const s=DB.settings||{};
+  let msg=`*${s.clinicName||'العيادة'}* — عرض سعر ${q.id}\n`;
+  msg+=`العميل: ${q.clientName||''}\nالتاريخ: ${fmtDate(q.date)}\n\n*البنود:*\n`;
+  (q.items||[]).forEach((it,i)=>{ const line=(Number(it.qty)||1)*(Number(it.price)||0)-(Number(it.disc)||0); msg+=`${i+1}. ${it.desc} (${it.qty||1}) — ${qFmt(line,q.currency)}\n`; });
+  if(t.wholeDisc>0) msg+=`خصم الفاتورة: ${qFmt(t.wholeDisc,q.currency)}\n`;
+  msg+=`\n*الإجمالي النهائي: ${qFmt(t.total,q.currency)}*`;
+  if((q.installments||[]).length){ msg+=`\n\n*خطة الدفعات:*\n`; q.installments.forEach((ins,i)=>{ msg+=`${i+1}. ${fmtDate(ins.date)} — ${qFmt(ins.amount,q.currency)}\n`; }); }
+  if(q.notes) msg+=`\nملاحظات: ${q.notes}`;
+  const phone=(q.phone||'').replace(/[^0-9]/g,'');
+  if(!phone){ toast('wrn','⚠️ مفيش رقم هاتف للعميل — هيفتح واتساب من غير رقم'); }
+  window.open('https://wa.me/'+phone+'?text='+encodeURIComponent(msg),'_blank');
+  toast('ok','📲 جاري فتح واتساب...');
+};
+window.sendInvoiceWA=function(id){
+  const inv=DB.invoices.find(x=>x.id===id); if(!inv){ toast('err','الفاتورة غير موجودة'); return; }
+  const p=getPatient(inv.patientId); const s=DB.settings||{};
+  const due=(Number(inv.amount)||0)-(Number(inv.paid)||0);
+  let msg=`*${s.clinicName||'العيادة'}* — فاتورة ${inv.id}\n`;
+  msg+=`المريض: ${p.name||''}\nالتاريخ: ${fmtDate(inv.date)}\n\n`;
+  msg+=`الإجمالي: ${fmt(inv.amount)} ${curSym()}\nالمدفوع: ${fmt(inv.paid||0)} ${curSym()}\n`;
+  msg+=`*المتبقي: ${fmt(due)} ${curSym()}*\nالحالة: ${inv.status||''}`;
+  if(inv.estCurrency && inv.estCurrency!=='EGP' && inv.estRate>0){ const sym=(CUR_INFO[inv.estCurrency]||{}).sym||inv.estCurrency; msg+=`\n\n(تقديري: المتبقي ≈ ${(due/inv.estRate).toLocaleString('en-US',{maximumFractionDigits:2})} ${sym} بسعر ${inv.estRate})`; }
+  const phone=(p.phone||'').replace(/[^0-9]/g,'');
+  if(!phone){ toast('wrn','⚠️ المريض ملوش رقم — هيفتح واتساب من غير رقم'); }
+  window.open('https://wa.me/'+phone+'?text='+encodeURIComponent(msg),'_blank');
+};
+// 💱 عرض تقديري للفاتورة بعملة أجنبية (لا يؤثر على المحاسبة بالجنيه)
+window.openInvoiceFx=function(id){
+  const inv=DB.invoices.find(x=>x.id===id); if(!inv){ toast('err','الفاتورة غير موجودة'); return; }
+  const cur=inv.estCurrency||'USD'; const rate=inv.estRate||'';
+  const old=document.getElementById('ifx-modal'); if(old)old.remove();
+  const div=document.createElement('div'); div.id='ifx-modal'; div.className='mo open';
+  div.innerHTML=`<div class="md" style="max-width:420px">
+    <div class="mh"><div class="mht">💱 عرض تقديري بعملة أجنبية</div><button class="xb" onclick="document.getElementById('ifx-modal').remove()">✕</button></div>
+    <div class="mb">
+      <div class="txs tm mb8">قيمة الفاتورة بالجنيه: <b>${fmt(inv.amount)} ${curSym()}</b> • المتبقي: <b>${fmt((Number(inv.amount)||0)-(Number(inv.paid)||0))} ${curSym()}</b></div>
+      <div class="fr2">
+        <div class="fg"><label class="fl">العملة</label><select class="fc" id="ifx-cur" onchange="ifxCalc()">
+          ${['USD','SAR','EGP'].map(c=>`<option value="${c}" ${cur===c?'selected':''}>${CUR_INFO[c].name} (${CUR_INFO[c].sym})</option>`).join('')}
+        </select></div>
+        <div class="fg"><label class="fl">سعر الصرف التقديري (مقابل الجنيه)</label><input type="number" step="any" class="fc" id="ifx-rate" value="${rate}" placeholder="مثال: 50" oninput="ifxCalc()"></div>
+      </div>
+      <div id="ifx-preview" style="padding:11px;background:var(--bg3);border-radius:8px;font-size:13px"></div>
+    </div>
+    <div class="mf"><button class="btn bs" onclick="document.getElementById('ifx-modal').remove()">إغلاق</button><button class="btn bp" onclick="saveInvoiceFx('${id}')">💾 حفظ التقدير</button></div>
+  </div>`;
+  document.body.appendChild(div);
+  window.__ifxId=id; ifxCalc();
+};
+window.ifxCalc=function(){
+  const id=window.__ifxId; const inv=DB.invoices.find(x=>x.id===id); if(!inv) return;
+  const cur=document.getElementById('ifx-cur').value;
+  const rate=parseFloat(document.getElementById('ifx-rate').value)||0;
+  const sym=(CUR_INFO[cur]||CUR_INFO.EGP).sym;
+  const box=document.getElementById('ifx-preview'); if(!box) return;
+  if(cur==='EGP'||rate<=0){ box.innerHTML='<span class="tm">أدخل سعر صرف لعرض القيمة التقديرية بالعملة الأجنبية.</span>'; return; }
+  const total=(Number(inv.amount)||0)/rate, paid=(Number(inv.paid)||0)/rate, due=((Number(inv.amount)||0)-(Number(inv.paid)||0))/rate;
+  const f=n=>Number(n||0).toLocaleString('en-US',{maximumFractionDigits:2})+' '+sym;
+  box.innerHTML=`<div class="fc2 jb mb8"><span class="tm">الإجمالي التقديري</span><span class="fw7">${f(total)}</span></div>
+    <div class="fc2 jb mb8"><span class="tm">المدفوع التقديري</span><span class="fw7">${f(paid)}</span></div>
+    <div class="fc2 jb" style="padding-top:7px;border-top:1px solid var(--border)"><span class="fw7">المتبقي التقديري</span><span class="fw8 tc3">${f(due)}</span></div>`;
+};
+window.saveInvoiceFx=function(id){
+  const inv=DB.invoices.find(x=>x.id===id); if(!inv) return;
+  inv.estCurrency=document.getElementById('ifx-cur').value;
+  inv.estRate=parseFloat(document.getElementById('ifx-rate').value)||0;
+  saveDB(); document.getElementById('ifx-modal').remove(); refreshPage('invoices');
+  toast('ok','✅ تم حفظ التقدير على الفاتورة');
+};
+window.qFillFromPatient=function(){
+  const id=document.getElementById('q-patient').value; if(!id) return;
+  const p=getPatient(id);
+  const c=document.getElementById('q-client'), ph=document.getElementById('q-phone');
+  if(c) c.value=p.name||c.value;
+  if(ph) ph.value=p.phone||ph.value;
+};
+window.qRecalc=function(){
+  const cur=document.getElementById('q-cur')?.value||'EGP';
+  const sym=(CUR_INFO[cur]||CUR_INFO.EGP).sym;
+  let sub=0;
+  document.querySelectorAll('#q-items .q-row').forEach(r=>{
+    sub += (Number(r.querySelector('.q-qty').value)||0)*(Number(r.querySelector('.q-price').value)||0) - (Number(r.querySelector('.q-disc').value)||0);
+  });
+  if(sub<0) sub=0;
+  const dmode=document.getElementById('q-dmode')?.value||'amount';
+  const dval=Number(document.getElementById('q-dval')?.value)||0;
+  let wdisc = dmode==='percent' ? sub*dval/100 : dval; if(wdisc<0)wdisc=0; if(wdisc>sub)wdisc=sub;
+  const f=n=>Number(n||0).toLocaleString('en-US',{maximumFractionDigits:2})+' '+sym;
+  const setT=(id,v)=>{const e=document.getElementById(id); if(e)e.textContent=v;};
+  setT('q-sub',f(sub)); setT('q-wdisc',f(wdisc)); setT('q-total',f(sub-wdisc));
+  return {sub,wdisc,total:sub-wdisc,cur};
+};
+window.openQuoteModal=function(id){
+  const q = id ? (DB.quotes||[]).find(x=>x.id===id) : null;
+  const cur = (q&&q.currency) || 'EGP';
+  const itemsRows = ((q&&q.items&&q.items.length)? q.items : [{qty:1}]).map(it=>qItemRowHTML(it)).join('');
+  const instRows = ((q&&q.installments)||[]).map(ins=>qInstRowHTML(ins)).join('');
+  const patientsOpts = DB.patients.map(p=>`<option value="${p.id}">${p.name} - ${p.phone||''}</option>`).join('');
+  const today=new Date().toISOString().split('T')[0];
+  const html=`
+  <div class="mh"><div class="mht">📑 ${id?'تعديل عرض السعر':'عرض سعر / فاتورة توضيحية'}</div><button class="xb" onclick="closeQuoteModal()">✕</button></div>
+  <div class="mb">
+    <input type="hidden" id="q-id" value="${id||''}">
+    <div class="fr2">
+      <div class="fg"><label class="fl">اسم العميل</label><input class="fc" id="q-client" value="${(q&&q.clientName)||''}" placeholder="اسم العميل"></div>
+      <div class="fg"><label class="fl">الهاتف (واتساب)</label><input class="fc" id="q-phone" value="${(q&&q.phone)||''}" placeholder="2010xxxxxxxx"></div>
+    </div>
+    <div class="fg"><label class="fl">أو اختر من المرضى</label>
+      <select class="fc" id="q-patient" onchange="qFillFromPatient()"><option value="">— لا شيء —</option>${patientsOpts}</select>
+    </div>
+    <div class="fr2">
+      <div class="fg"><label class="fl">التاريخ</label><input type="date" class="fc" id="q-date" value="${(q&&q.date)||today}"></div>
+      <div class="fg"><label class="fl">العملة</label>
+        <select class="fc" id="q-cur" onchange="qRecalc()">${['EGP','SAR','USD'].map(c=>`<option value="${c}" ${cur===c?'selected':''}>${CUR_INFO[c].name} (${CUR_INFO[c].sym})</option>`).join('')}</select>
+      </div>
+    </div>
+    <div class="card-t mb8">🦷 البنود (وصف • كمية • سعر • خصم البند)</div>
+    <div id="q-items">${itemsRows}</div>
+    <button class="btn bs btn-xs" onclick="qAddItem()" style="margin-top:4px">➕ إضافة بند</button>
+    <div class="dv"></div>
+    <div class="card-t mb8">💸 خصم على كامل الفاتورة</div>
+    <div class="fr2">
+      <div class="fg"><label class="fl">نوع الخصم</label><select class="fc" id="q-dmode" onchange="qRecalc()"><option value="amount" ${(q&&q.discountMode==='percent')?'':'selected'}>مبلغ</option><option value="percent" ${(q&&q.discountMode==='percent')?'selected':''}>نسبة %</option></select></div>
+      <div class="fg"><label class="fl">قيمة الخصم</label><input type="number" class="fc" id="q-dval" value="${(q&&q.discountValue)||0}" oninput="qRecalc()"></div>
+    </div>
+    <div class="dv"></div>
+    <div class="card-t mb8">📅 خطة الأقساط</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px">
+      <div class="fg"><label class="fl">عدد الدفعات</label><input type="number" class="fc" id="q-instn" value="3" min="1"></div>
+      <div class="fg"><label class="fl">أول دفعة</label><input type="date" class="fc" id="q-inststart" value="${today}"></div>
+      <div class="fg"><label class="fl">التكرار</label><select class="fc" id="q-instfreq"><option value="30">شهري</option><option value="7">أسبوعي</option><option value="15">كل ١٥ يوم</option></select></div>
+    </div>
+    <button class="btn bs btn-xs" onclick="qGenInst()" style="margin-top:6px">🔁 توليد الأقساط</button>
+    <div id="q-insts" style="margin-top:8px">${instRows}</div>
+    <div class="dv"></div>
+    <div class="fg"><label class="fl">ملاحظات</label><textarea class="fc" id="q-notes" rows="2">${(q&&q.notes)||''}</textarea></div>
+    <div class="card" style="margin-top:10px;background:var(--bg3)">
+      <div class="fc2 jb mb8"><span>الإجمالي قبل الخصم</span><span id="q-sub">0</span></div>
+      <div class="fc2 jb mb8"><span>خصم الفاتورة</span><span id="q-wdisc">0</span></div>
+      <div class="fc2 jb" style="font-size:16px;font-weight:800"><span>الإجمالي النهائي</span><span id="q-total" class="tc3">0</span></div>
+    </div>
+  </div>
+  <div class="mf"><button class="btn bs" onclick="closeQuoteModal()">إلغاء</button><button class="btn bp" onclick="saveQuoteFromModal()">💾 حفظ</button></div>`;
+  let ov=document.getElementById('quote-modal'); if(ov) ov.remove();
+  ov=document.createElement('div'); ov.id='quote-modal'; ov.className='mo open';
+  ov.innerHTML=`<div class="md lg">${html}</div>`;
+  ov.onclick=e=>{ if(e.target===ov) closeQuoteModal(); };
+  document.body.appendChild(ov);
+  qRecalc();
+};
+window.closeQuoteModal=function(){ const o=document.getElementById('quote-modal'); if(o)o.remove(); };
+window.saveQuoteFromModal=function(){
+  const id=document.getElementById('q-id').value;
+  const items=[];
+  document.querySelectorAll('#q-items .q-row').forEach(r=>{
+    const desc=r.querySelector('.q-desc').value.trim();
+    const price=Number(r.querySelector('.q-price').value)||0;
+    if(desc||price) items.push({desc,qty:Number(r.querySelector('.q-qty').value)||1,price,disc:Number(r.querySelector('.q-disc').value)||0});
+  });
+  if(!items.length){ toast('err','أضف بند واحد على الأقل'); return; }
+  const prev = id ? (DB.quotes||[]).find(x=>x.id===id) : null;
+  const obj={ id: id || ('Q'+Date.now()),
+    clientName: document.getElementById('q-client').value.trim(),
+    patientId: document.getElementById('q-patient').value||'',
+    phone: document.getElementById('q-phone').value.trim(),
+    date: document.getElementById('q-date').value,
+    currency: document.getElementById('q-cur').value,
+    items, discountMode: document.getElementById('q-dmode').value,
+    discountValue: Number(document.getElementById('q-dval').value)||0,
+    installments: (function(){ const a=[]; document.querySelectorAll('#q-insts .qi-row').forEach(r=>{ a.push({label:r.querySelector('.qi-label').value, date:r.querySelector('.qi-date').value, amount:Number(r.querySelector('.qi-amt').value)||0}); }); return a; })(),
+    notes: document.getElementById('q-notes').value.trim(),
+    createdAt: (prev&&prev.createdAt)||new Date().toISOString().split('T')[0] };
+  if(!DB.quotes) DB.quotes=[];
+  if(id){ const i=DB.quotes.findIndex(x=>x.id===id); if(i>-1) DB.quotes[i]=obj; else DB.quotes.push(obj); }
+  else DB.quotes.push(obj);
+  saveDB(); closeQuoteModal(); refreshPage('quotes'); toast('ok','✅ تم حفظ عرض السعر');
+};
+
+window.openPatientFile=function(id){
+  const p=getPatient(id);
+  if(!p||!p.id){ toast('err','المريض غير موجود'); return; }
+  const cpf="if(document.getElementById('info-modal'))document.getElementById('info-modal').remove();";
+  const appts=DB.appointments.filter(a=>a.patientId===id).sort((a,b)=>(b.date||'').localeCompare(a.date||''));
+  const cs=DB.cases.filter(c=>c.patientId===id);
+  const invs=DB.invoices.filter(i=>i.patientId===id);
+  const age=p.dob?(new Date().getFullYear()-parseInt(p.dob.split('-')[0])+' سنة'):'-';
+  const head=`<div class="fc2 jb" style="flex-wrap:wrap;gap:10px;margin-bottom:12px">
+    <div class="fc2 gap8"><div class="av" style="width:44px;height:44px;font-size:15px">${(p.name||'?').substring(0,2)}</div>
+      <div><div style="font-size:16px;font-weight:800">${p.name||''}</div>
+      <div class="txs tm">${p.id} • ${p.gender||''} • ${age} • ${p.phone||''}</div></div></div>
+    <div style="text-align:left"><div class="txs tm">المديونية الحالية</div>
+      <div class="${(p.balance||0)>0?'tr':'tgr'}" style="font-size:20px;font-weight:800">${(p.balance||0)>0?fmt(p.balance)+' '+curSym():'لا يوجد ✓'}</div></div>
+  </div>`;
+  const actions=`<div class="fc2 gap8" style="flex-wrap:wrap;margin-bottom:14px">
+    <button class="btn bp btn-xs" onclick="${cpf}openModal('m-appt','add',null,'${id}')">📅 احجز موعد</button>
+    <button class="btn bp btn-xs" onclick="${cpf}openModal('m-case','add',null,'${id}')">⚕️ ابدأ حالة</button>
+    <button class="btn bp btn-xs" onclick="${cpf}collectFromPatient('${id}')">💰 حصّل دفعة</button>
+    <button class="btn bs btn-xs" onclick="${cpf}openModal('m-patient','edit','${id}')">✏️ تعديل البيانات</button>
+    <button class="btn bs btn-xs" onclick="${cpf}openWAChat('${id}')">💬 واتساب</button>
+  </div>`;
+  const stats=`<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px">
+    <div class="sc c3"><div class="sc-val" style="font-size:18px">${appts.length}</div><div class="sc-lbl">مواعيد</div></div>
+    <div class="sc c4"><div class="sc-val" style="font-size:18px">${cs.length}</div><div class="sc-lbl">حالات</div></div>
+    <div class="sc c1"><div class="sc-val" style="font-size:18px">${invs.length}</div><div class="sc-lbl">فواتير</div></div>
+  </div>`;
+  const info=`<div class="card" style="margin-bottom:12px"><div class="txs tm">📍 العنوان: ${p.address||'-'}</div><div class="txs tm">🩺 الحالة الصحية: ${p.history||'-'}</div><div class="txs tm">🚨 طوارئ: ${p.emergency||'-'}</div></div>`;
+  const apptRows=appts.length?appts.map(a=>`<tr><td>${fmtDate(a.date)} ${a.time||''}</td><td>${a.type||''}</td><td>${getDoctor(a.doctorId).name}</td><td>${statusBadge(a.status)}</td></tr>`).join(''):`<tr><td colspan="4" class="txs tm" style="text-align:center">لا يوجد مواعيد</td></tr>`;
+  const caseRows=cs.length?cs.map(c=>`<tr><td>${c.id}</td><td>${c.service||''}</td><td>${fmt(c.price)} ${curSym()}</td><td>${statusBadge(c.status)}</td></tr>`).join(''):`<tr><td colspan="4" class="txs tm" style="text-align:center">لا يوجد حالات</td></tr>`;
+  const invRows=invs.length?invs.map(i=>{const due=(Number(i.amount)||0)-(Number(i.paid)||0);return `<tr><td>${i.id}</td><td>${fmt(i.amount)} ${curSym()}</td><td>${fmt(i.paid||0)} ${curSym()}</td><td>${statusBadge(i.status)}</td><td>${due>0?`<button class="btn bp btn-xs" onclick="${cpf}payInvoice('${i.id}')">💰 تحصيل</button>`:'✓'}</td></tr>`;}).join(''):`<tr><td colspan="5" class="txs tm" style="text-align:center">لا يوجد فواتير</td></tr>`;
+  const html=`${head}${actions}${stats}${info}
+    <div class="card-t mb8">📅 المواعيد</div>
+    <div class="tw" style="margin-bottom:14px"><table><thead><tr><th>التاريخ</th><th>النوع</th><th>الطبيب</th><th>الحالة</th></tr></thead><tbody>${apptRows}</tbody></table></div>
+    <div class="card-t mb8">⚕️ الحالات</div>
+    <div class="tw" style="margin-bottom:14px"><table><thead><tr><th>#</th><th>الخدمة</th><th>القيمة</th><th>الحالة</th></tr></thead><tbody>${caseRows}</tbody></table></div>
+    <div class="card-t mb8">🧾 الفواتير</div>
+    <div class="tw"><table><thead><tr><th>#</th><th>القيمة</th><th>المدفوع</th><th>الحالة</th><th></th></tr></thead><tbody>${invRows}</tbody></table></div>`;
+  showInfoModal('📋 ملف المريض', html);
+};
+
+window.startCaseFromAppt=function(apptId){
+  const a=DB.appointments.find(x=>x.id===apptId);
+  if(!a){ toast('err','الموعد غير موجود'); return; }
+  if(document.getElementById('info-modal')) document.getElementById('info-modal').remove();
+  openModal('m-case','add',null,a.patientId);
+  setTimeout(()=>{
+    const dd=document.getElementById('m-cdoctor'); if(dd && a.doctorId) dd.value=a.doctorId;
+    const sv=document.getElementById('m-cservice'); if(sv && a.type) sv.value=a.type;
+    if(typeof calcCaseModal==='function') calcCaseModal();
+  },60);
+};
+function toggleNavGroup(h){
+  const items=h.nextElementSibling;
+  if(!items||!items.classList.contains('ng-items')) return;
+  const hidden=items.style.display==='none';
+  items.style.display=hidden?'':'none';
+  const chev=h.querySelector('.ng-chev'); if(chev) chev.textContent=hidden?'▾':'▸';
+}
+window.toggleNavGroup=toggleNavGroup;
+
+
 
 // ── LABS ──
 function buildLabs(){
@@ -1501,8 +1913,14 @@ function buildExpenses(){
 // ── PARTNERS ──
 function buildPartners(){
   const net=calcNetProfit();
-  const shareVal=net/100;
-  return `
+  const taxEnabled=!!(DB.settings&&DB.settings.taxEnabled);
+  const taxRate=Number(DB.settings&&DB.settings.taxRate)||0;
+  const tax=(taxEnabled&&net>0)?net*taxRate/100:0;
+  const distributable=net-tax;
+  const totalShares=DB.partners.reduce((s,p)=>s+(Number(p.shares)||0),0);
+  const shareVal=distributable/100;
+  const sharesWarn=(totalShares!==100)?`<div class="card mb14" style="background:rgba(220,80,80,.08);border-color:rgba(220,80,80,.35)"><div style="font-size:12px;color:var(--red,#d65050);font-weight:700">⚠️ مجموع حصص الشركاء = ${totalShares}% (المفروض 100%). التوزيع الحالي ${totalShares>100?'أكبر':'أقل'} من الصافي — راجع الحصص.</div></div>`:'';
+  return sharesWarn + `
   <div class="fc2 jb mb20">
     <span style="font-size:16px;font-weight:700">🤝 الشركاء وتوزيع الأرباح</span>
     <button class="btn bp" onclick="openModal('m-partner','add')">➕ إضافة شريك</button>
@@ -1557,7 +1975,11 @@ function buildPartners(){
 window.payPartner=function(id){
   const p=DB.partners.find(x=>x.id===id);
   const net=calcNetProfit();
-  const pShare=p.shares*(net/100);
+  const taxEnabled=!!(DB.settings&&DB.settings.taxEnabled);
+  const taxRate=Number(DB.settings&&DB.settings.taxRate)||0;
+  const tax=(taxEnabled&&net>0)?net*taxRate/100:0;
+  const distributable=net-tax;
+  const pShare=(Number(p.shares)||0)*(distributable/100);
   const rem=pShare-(p.withdrawn||0);
   if(rem<=0){toast('inf','لا يوجد رصيد قابل للسحب');return;}
   openPaymentModal({title:'سحب أرباح - '+p.name,direction:'out',amount:Math.round(rem),category:'سحب شريك',refId:id,note:p.name,onDone:(pay)=>{
@@ -1578,7 +2000,8 @@ function buildInvoices(){
       <td>${statusBadge(inv.status)}</td>
       <td><div class="fc2 gap8">
         ${inv.status==='مدفوعة'?`<span class="bx bgr">✓ ${getMethod(inv.methodId).name||'مدفوعة'}</span>`:`<button class="btn bp btn-xs" onclick="payInvoice('${inv.id}')">💰 تحصيل</button>`}
-        <button class="btn bs btn-xs" onclick="sendInvoiceWA('${inv.id}')">💬</button>
+        <button class="btn bs btn-xs" onclick="openInvoiceFx('${inv.id}')" title="عرض تقديري بعملة أجنبية">💱</button>
+        <button class="btn bp btn-xs" onclick="sendInvoiceWA('${inv.id}')">💬 واتساب</button>
         <button class="btn bs btn-xs" onclick="printInvoice('${inv.id}')">🖨️</button>
         <button class="btn bs btn-xs" onclick="invoiceToPDF('${inv.id}')">📄 PDF</button>
         <button class="btn bd btn-xs" onclick="deleteRecord('invoices','${inv.id}','invoices')">🗑️</button>
@@ -1593,7 +2016,7 @@ function buildInvoices(){
     <div class="sc c1"><div class="sc-icon">🧾</div><div class="sc-val">${DB.invoices.length}</div><div class="sc-lbl">إجمالي الفواتير</div></div>
     <div class="sc c3"><div class="sc-icon">✅</div><div class="sc-val">${DB.invoices.filter(i=>i.status==='مدفوعة').length}</div><div class="sc-lbl">مدفوعة</div></div>
     <div class="sc c5"><div class="sc-icon">⏳</div><div class="sc-val">${DB.invoices.filter(i=>i.status==='معلقة').length}</div><div class="sc-lbl">معلقة</div></div>
-    <div class="sc c2"><div class="sc-icon">💰</div><div class="sc-val">${fmt(DB.invoices.filter(i=>i.status==='مدفوعة').reduce((s,i)=>s+(i.amount||0),0))}</div><div class="sc-lbl">المحصّل (${curSym()})</div></div>
+    <div class="sc c2"><div class="sc-icon">💰</div><div class="sc-val">${fmt(DB.invoices.reduce((s,i)=>s+(Number(i.paid)||0),0))}</div><div class="sc-lbl">المحصّل (${curSym()})</div></div>
   </div>
   <div class="card">
     <div class="tw"><table>
@@ -1609,21 +2032,15 @@ window.changeInvStatus=function(id,status){
 window.payInvoice=function(id){
   const inv=DB.invoices.find(x=>x.id===id); if(!inv)return;
   if(inv.status==='مدفوعة'){toast('inf','الفاتورة مدفوعة بالفعل');return;}
-  openPaymentModal({title:'تحصيل فاتورة '+inv.id,direction:'in',amount:inv.amount,category:'فاتورة',refId:inv.id,note:getPatient(inv.patientId).name,onDone:(pay)=>{
-    inv.status='مدفوعة'; inv.methodId=pay.methodId;
+  openPaymentModal({title:'تحصيل فاتورة '+inv.id,direction:'in',amount:(inv.amount-(Number(inv.paid)||0)),category:'فاتورة',refId:inv.id,note:getPatient(inv.patientId).name,onDone:(pay)=>{
+    inv.paid=(Number(inv.paid)||0)+pay.amount; inv.methodId=pay.methodId;
+    inv.status = inv.paid>=(inv.amount||0) ? 'مدفوعة' : (inv.paid>0 ? 'مدفوعة جزئيًا' : 'معلقة');
     const c=DB.cases.find(x=>x.id===inv.caseId);
-    if(c){ const prev=(c.collected!=null?Number(c.collected):0); c.collected=Math.min(c.price||prev+pay.amount, prev+pay.amount); }
+    if(c){ const prev=(c.collected!=null?Number(c.collected):0); c.collected=Math.min((c.price||(prev+pay.amount)), prev+pay.amount); }
     const pt=DB.patients.find(x=>x.id===inv.patientId); if(pt){ pt.balance=Math.max(0,(pt.balance||0)-pay.amount); }
     saveDB(); refreshPage('invoices'); refreshPage('treasury'); refreshPage('accounting'); refreshPage('dashboard'); refreshPage('services');
     addNotif('مالية','💰','var(--gg)','تحصيل فاتورة '+inv.id,fmt(pay.amount)+' '+curSym());
   }});
-};
-window.sendInvoiceWA=function(id){
-  const inv=DB.invoices.find(x=>x.id===id);
-  if(!inv)return;
-  const p=getPatient(inv.patientId);
-  sendWAMessage(inv.patientId,'مرفق فاتورتك #'+id+' بقيمة '+fmt(inv.amount)+' جنيه. شكراً لثقتكم 🧾');
-  toast('ok','تم إرسال الفاتورة عبر واتساب ✓');
 };
 function buildInvoicePrint(id){
   const inv=DB.invoices.find(x=>x.id===id);
@@ -2143,22 +2560,28 @@ function buildBranding(){
   </div>
   <div class="card">
     <div class="card-t mb14">🎨 الألوان والمظهر</div>
-    <div class="fg"><label class="fl">اللون الرئيسي</label><div class="fc2 gap8"><input type="color" value="#00d4aa" onchange="updateColor('teal',this.value)" style="width:36px;height:36px;border:none;border-radius:7px;cursor:pointer"><input type="text" class="fc" value="#00d4aa" style="width:100px"></div></div>
-    <div class="fg"><label class="fl">اللون الثانوي</label><div class="fc2 gap8"><input type="color" value="#f0a500" style="width:36px;height:36px;border:none;border-radius:7px;cursor:pointer"><input type="text" class="fc" value="#f0a500" style="width:100px"></div></div>
+    <div class="fg"><label class="fl">اللون الرئيسي</label>
+      <div class="fc2 gap8">
+        <input type="color" id="br-color1" value="${s.primaryColor||'#2346d5'}" onchange="syncColorText('br-color1','br-color1t')" style="width:36px;height:36px;border:none;border-radius:7px;cursor:pointer">
+        <input type="text" class="fc" id="br-color1t" value="${s.primaryColor||'#2346d5'}" style="width:110px" oninput="syncColorPicker('br-color1','br-color1t')">
+      </div>
+    </div>
+    <div class="fg"><label class="fl">اللون الثانوي</label>
+      <div class="fc2 gap8">
+        <input type="color" id="br-color2" value="${s.secondaryColor||'#a86b00'}" onchange="syncColorText('br-color2','br-color2t')" style="width:36px;height:36px;border:none;border-radius:7px;cursor:pointer">
+        <input type="text" class="fc" id="br-color2t" value="${s.secondaryColor||'#a86b00'}" style="width:110px" oninput="syncColorPicker('br-color2','br-color2t')">
+      </div>
+    </div>
+    <div class="txs tm" style="margin-top:4px">الألوان بتتحفظ وبتتطبّق على كل النظام بعد ضغط «حفظ التغييرات».</div>
     <div class="dv"></div>
-    <div class="card-t mb12">📄 قوالب الطباعة</div>
-    ${['🧾 قالب الفاتورة','💊 قالب الروشتة','📋 تقرير المريض'].map(t=>`
-      <div class="fc2 jb" style="padding:8px;background:var(--bg3);border-radius:7px;margin-bottom:7px">
-        <span style="font-size:12px">${t}</span>
-        <div class="fc2 gap8">
-          <button class="btn bs btn-xs" onclick="toast('inf','فتح المعاينة...')">معاينة</button>
-          <button class="btn bs btn-xs" onclick="toast('inf','تعديل القالب...')">تعديل</button>
-        </div>
-      </div>`).join('')}
+    <div class="card-t mb12">📄 الفاتورة والقوالب</div>
+    <div class="fc2 jb" style="padding:8px;background:var(--bg3);border-radius:7px;margin-bottom:7px">
+      <span style="font-size:12px">إعدادات الفاتورة (الشعار والبيانات والترويسة)</span>
+      <button class="btn bs btn-xs" onclick="sp('inv-settings',null)">فتح الإعدادات</button>
+    </div>
     <div class="dv"></div>
     <div class="fc2 gap8 mt8">
-      <button class="btn bs f1" id="dark-toggle" onclick="toggleDarkMode()">☀️ وضع فاتح</button>
-      <button class="btn bs f1" onclick="toast('info','جاري معاينة الفاتورة...')">👁️ معاينة الفاتورة</button>
+      <button class="btn bs f1" id="dark-toggle" onclick="toggleDarkMode()">☀️ تبديل الوضع الفاتح/الداكن</button>
     </div>
   </div>
   </div>`;
@@ -2168,6 +2591,7 @@ window.saveBranding=function(){
   DB.settings.address=document.getElementById('br-addr')?.value||DB.settings.address;
   DB.settings.phone=document.getElementById('br-phone')?.value||DB.settings.phone;
   DB.settings.email=document.getElementById('br-email')?.value||DB.settings.email;
+  { const c1=document.getElementById('br-color1t')?.value||document.getElementById('br-color1')?.value; const c2=document.getElementById('br-color2t')?.value||document.getElementById('br-color2')?.value; if(c1)DB.settings.primaryColor=c1; if(c2)DB.settings.secondaryColor=c2; }
   saveDB();applyBranding();
   if(typeof saveSettingsToSupabase==='function'){ saveSettingsToSupabase(); }
   toast('ok','✅ تم حفظ بيانات العيادة');
@@ -2204,7 +2628,11 @@ window.applyBranding=function(){
   document.querySelectorAll('.tb-logo-icon').forEach(el=>{ el.innerHTML=iconHTML; });
   const loginLogo=document.querySelector('.login-logo');
   if(loginLogo){ loginLogo.innerHTML = s.logo ? `<img src="${s.logo}" style="width:64px;height:64px;object-fit:cover;border-radius:14px">` : '🦷'; }
+  if(s.primaryColor){ document.documentElement.style.setProperty('--teal',s.primaryColor); document.documentElement.style.setProperty('--teal2',s.primaryColor); }
+  if(s.secondaryColor){ document.documentElement.style.setProperty('--gold',s.secondaryColor); }
 };
+window.syncColorText=function(p,t){ const a=document.getElementById(p),b=document.getElementById(t); if(a&&b)b.value=a.value; };
+window.syncColorPicker=function(p,t){ const a=document.getElementById(p),b=document.getElementById(t); if(a&&b&&/^#[0-9a-fA-F]{6}$/.test(b.value))a.value=b.value; };
 window.updateColor=function(which,val){
   document.documentElement.style.setProperty('--'+which,val);
 };
@@ -2695,7 +3123,7 @@ function buildCaseModal(isEdit,id,prePatient){
     </div>
     <div class="fr2">
       <div class="fg"><label class="fl">إجمالي قيمة العلاج (${curSym()})</label><input type="number" class="fc" id="m-cprice" value="${c.price||''}" oninput="calcCaseModal()"></div>
-      <div class="fg"><label class="fl">المحصّل من المريض (${curSym()})</label><input type="number" class="fc" id="m-ccollected" value="${c.collected!=null?c.collected:(c.price||'')}" placeholder="افتراضي = كامل القيمة" oninput="calcCaseModal()"></div>
+      <div class="fg"><label class="fl">المحصّل من المريض (${curSym()})</label><input type="number" class="fc" id="m-ccollected" value="${c.collected!=null?c.collected:''}" placeholder="0 = لم يُحصّل بعد" oninput="calcCaseModal()"></div>
     </div>
     <div class="fr2" style="gap:12px">
       <div class="fg"><label class="fl">تكلفة المعمل (${curSym()})</label><input type="number" class="fc" id="m-clab" value="${c.labCost||0}" oninput="calcCaseModal()"></div>
@@ -3112,7 +3540,7 @@ window.saveInvoice=function(id){
   const installments=(window.INV_PLAN||[]).filter(it=>it.amount>0||it.date);
   const data={patientId:document.getElementById('m-invpatient').value,caseId:document.getElementById('m-invcase').value,amount,date:document.getElementById('m-invdate').value,status:document.getElementById('m-invstatus').value,installments};
   if(id){const iv=DB.invoices.find(x=>x.id===id); Object.assign(iv,data); if(typeof updateInvoiceInSupabase==='function'){ updateInvoiceInSupabase(iv); }}
-  else{const newInv={id:'INV'+Date.now(),...data}; DB.invoices.push(newInv); if(typeof saveInvoiceToSupabase==='function'){ saveInvoiceToSupabase(newInv); }}
+  else{const newInv={id:'INV'+Date.now(),paid:0,...data}; DB.invoices.push(newInv); { const pt=DB.patients.find(x=>x.id===newInv.patientId); if(pt){ pt.balance=(Number(pt.balance)||0)+(Number(newInv.amount)||0); } } if(typeof saveInvoiceToSupabase==='function'){ saveInvoiceToSupabase(newInv); }}
   saveDB();closeModals();refreshPage('invoices');refreshPage('dashboard');
   toast('ok','✅ تم '+(id?'تعديل':'إنشاء')+' الفاتورة');
 };
@@ -3397,7 +3825,7 @@ window.globalSearch=function(q){
   const resultsDiv=document.getElementById('search-results');
   if(!q||q.length<2){resultsDiv.style.display='none';return;}
   const results=[];
-  DB.patients.filter(p=>p.name.includes(q)||p.phone.includes(q)).forEach(p=>results.push({type:'مريض',icon:'👤',name:p.name,sub:p.phone,action:`openModal('m-patient','edit','${p.id}')`}));
+  DB.patients.filter(p=>p.name.includes(q)||p.phone.includes(q)).forEach(p=>results.push({type:'مريض',icon:'👤',name:p.name,sub:p.phone,action:`openPatientFile('${p.id}')`}));
   DB.appointments.filter(a=>getPatient(a.patientId).name.includes(q)).forEach(a=>results.push({type:'موعد',icon:'📅',name:getPatient(a.patientId).name,sub:a.type+' • '+a.date,action:`sp('appointments',null)`}));
   DB.invoices.filter(i=>i.id.includes(q)||getPatient(i.patientId).name.includes(q)).forEach(i=>results.push({type:'فاتورة',icon:'🧾',name:'فاتورة #'+i.id,sub:getPatient(i.patientId).name+' • '+fmt(i.amount)+' '+curSym(),action:`sp('invoices',null)`}));
   resultsDiv.style.display=results.length?'block':'none';
@@ -3637,11 +4065,14 @@ function buildAccounting(){
 function getMethod(id){ return DB.paymentMethods.find(m=>m.id===id)||{name:'غير محدد',icon:'❓',commission:0}; }
 function methodCommission(id){ return Number(getMethod(id).commission)||0; }
 function netOfCommission(amount,methodId){ return amount - amount*methodCommission(methodId)/100; }
-function recordPayment({amount,methodId,direction,category,refId,note,date}){
-  amount=Number(amount)||0;
-  const comm = direction==='in' ? amount*methodCommission(methodId)/100 : 0;
-  const net = direction==='in' ? amount-comm : amount;
-  const pay={id:'PAY'+Date.now()+Math.floor(Math.random()*100),date:date||getTodayStr(),amount,methodId,direction,category:category||'',refId:refId||'',note:note||'',commission:comm,net};
+function recordPayment({amount,methodId,direction,category,refId,note,date,currency,fxRate}){
+  const amountCur=Number(amount)||0;
+  currency=currency||'EGP';
+  fxRate=(currency==='EGP')?1:(Number(fxRate)||1);
+  const amountEGP=amountCur*fxRate;                       // الأساس دائماً بالجنيه
+  const comm = direction==='in' ? amountEGP*methodCommission(methodId)/100 : 0;
+  const net = direction==='in' ? amountEGP-comm : amountEGP;
+  const pay={id:'PAY'+Date.now()+Math.floor(Math.random()*100),date:date||getTodayStr(),amount:amountEGP,amountCur,currency,fxRate,methodId,direction,category:category||'',refId:refId||'',note:note||'',commission:comm,net};
   DB.payments.push(pay);
   if(typeof savePaymentToSupabase==='function'){ savePaymentToSupabase(pay); }
   saveDB(); return pay;
@@ -3670,7 +4101,15 @@ window.openPaymentModal=function(cfg){
   div.innerHTML=`<div class="md" style="max-width:420px">
     <div class="mh"><div class="mht">${cfg.title||'تسجيل دفعة'}</div><button class="xb" onclick="document.getElementById('pay-modal').remove()">✕</button></div>
     <div class="mb">
-      <div class="fg"><label class="fl">المبلغ (${curSym()})</label><input type="number" step="any" class="fc" id="pay-amount" value="${cfg.amount!=null?cfg.amount:''}" oninput="payModalCalc()"></div>
+      <div class="fg"><label class="fl">المبلغ المدفوع</label><input type="number" step="any" class="fc" id="pay-amount" value="${cfg.amount!=null?cfg.amount:''}" oninput="payModalCalc()"></div>
+      <div class="fg"><label class="fl">العملة</label>
+        <select class="fc" id="pay-cur" onchange="payModalCalc()">
+          <option value="EGP">جنيه مصري (ج.م)</option>
+          <option value="SAR">ريال سعودي (ر.س)</option>
+          <option value="USD">دولار أمريكي ($)</option>
+        </select>
+      </div>
+      <div class="fg" id="pay-fx-row" style="display:none"><label class="fl">سعر صرف العملة مقابل الجنيه (يوم الدفع)</label><input type="number" step="any" class="fc" id="pay-fx" value="1" oninput="payModalCalc()"></div>
       <div class="fg"><label class="fl">وسيلة الدفع</label>
         <select class="fc" id="pay-method" onchange="payModalCalc()">
           ${methods.map(m=>`<option value="${m.id}">${m.icon||'💰'} ${m.name}${m.commission?` — عمولة ${m.commission}%`:''}</option>`).join('')}
@@ -3689,28 +4128,41 @@ window.openPaymentModal=function(cfg){
     if(amount<=0){toast('err','أدخل مبلغ صحيح');return;}
     const methodId=document.getElementById('pay-method').value;
     const note=document.getElementById('pay-note').value;
-    const pay=recordPayment({amount,methodId,direction:cfg.direction,category:cfg.category,refId:cfg.refId,note});
+    const currency=document.getElementById('pay-cur').value;
+    const fxRate=parseFloat(document.getElementById('pay-fx').value)||1;
+    const pay=recordPayment({amount,methodId,direction:cfg.direction,category:cfg.category,refId:cfg.refId,note,currency,fxRate});
     div.remove();
     if(cfg.onDone) cfg.onDone(pay);
     refreshPage('treasury');
     const m=getMethod(methodId);
-    toast('ok',(cfg.direction==='out'?'تم صرف ':'تم تحصيل ')+fmt(amount)+' '+curSym()+' عبر '+m.name+(pay.commission?' (عمولة '+fmt(pay.commission)+')':''));
+    const sym=(CUR_INFO[currency]||CUR_INFO.EGP).sym;
+    const egpTxt = currency!=='EGP' ? (' = '+fmt(pay.amount)+' ج.م') : '';
+    toast('ok',(cfg.direction==='out'?'تم صرف ':'تم تحصيل ')+fmt(amount)+' '+sym+egpTxt+' عبر '+m.name+(pay.commission?' (عمولة '+fmt(pay.commission)+' ج.م)':''));
   };
 };
 window.payModalCalc=function(){
   const cfg=window.__payCfg||{};
   const amount=parseFloat(document.getElementById('pay-amount')?.value)||0;
   const methodId=document.getElementById('pay-method')?.value;
-  const comm=cfg.direction==='in'?amount*methodCommission(methodId)/100:0;
-  const net=amount-comm;
+  const cur=document.getElementById('pay-cur')?.value||'EGP';
+  const fxRow=document.getElementById('pay-fx-row'); if(fxRow) fxRow.style.display = cur==='EGP' ? 'none' : '';
+  const rate = cur==='EGP' ? 1 : (parseFloat(document.getElementById('pay-fx')?.value)||1);
+  const amountEGP=amount*rate;
+  const comm=cfg.direction==='in'?amountEGP*methodCommission(methodId)/100:0;
+  const net=amountEGP-comm;
+  const sym=(CUR_INFO[cur]||CUR_INFO.EGP).sym;
   const box=document.getElementById('pay-preview'); if(!box)return;
-  if(cfg.direction==='out'){
-    box.innerHTML=`<div class="fc2 jb"><span class="tm">سيُخصم من ${getMethod(methodId).name}</span><span class="fw7 tr">${fmt(amount)} ${curSym()}</span></div>`;
-  }else{
-    box.innerHTML=`<div class="fc2 jb mb8"><span class="tm">المبلغ</span><span class="fw7">${fmt(amount)} ${curSym()}</span></div>
-      <div class="fc2 jb mb8"><span class="tm">العمولة (${methodCommission(methodId)}%)</span><span class="fw7 tr">- ${fmt(comm)} ${curSym()}</span></div>
-      <div class="fc2 jb" style="padding-top:7px;border-top:1px solid var(--border)"><span class="fw7">الصافي اللي هيوصلنا</span><span class="fw8 tgr">${fmt(net)} ${curSym()}</span></div>`;
+  let h='';
+  if(cur!=='EGP'){
+    h+=`<div class="fc2 jb mb8"><span class="tm">المبلغ بالعملة</span><span class="fw7">${fmt(amount)} ${sym}</span></div>`;
+    h+=`<div class="fc2 jb mb8"><span class="tm">سعر الصرف</span><span class="fw7">${rate} ج.م</span></div>`;
+    h+=`<div class="fc2 jb mb8"><span class="tm">القيمة بالجنيه</span><span class="fw7">${fmt(amountEGP)} ج.م</span></div>`;
   }
+  if(cfg.direction==='in' && comm>0){
+    h+=`<div class="fc2 jb mb8"><span class="tm">العمولة (${methodCommission(methodId)}%)</span><span class="fw7 tr">- ${fmt(comm)} ج.م</span></div>`;
+  }
+  h+=`<div class="fc2 jb" style="padding-top:7px;border-top:1px solid var(--border)"><span class="fw7">${cfg.direction==='out'?'سيُخصم (ج.م)':'الصافي اللي هيوصلنا (ج.م)'}</span><span class="fw8 ${cfg.direction==='out'?'tr':'tgr'}">${fmt(cfg.direction==='out'?amountEGP:net)} ج.م</span></div>`;
+  box.innerHTML=h;
 };
 
 function buildPayMethodModal(isEdit,id){
